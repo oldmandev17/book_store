@@ -1,0 +1,56 @@
+GET http://localhost:5000
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzkyMzU3ODIsImV4cCI6MTY3OTIzOTM4MiwiYXVkIjoiNjQxNzFhYzY3YmYxNjJkY2Y4NGNlNmU2IiwiaXNzIjoiYm9va3N0b3JlcGFnZS5jb20ifQ.q9OB9wiWC_ok7CnU-kIkwgX_stfoYhQp2nRHWFCsxrU
+
+### Register route
+POST http://localhost:5000/auth/register
+Content-Type: application/json
+
+{
+  "username": "oldmandev",
+  "email": "19110283@student.hcmute.edu.vn", 
+  "password": "Dttv_11042001@" 
+}
+
+### Login route
+POST http://localhost:5000/auth/login
+Content-Type: application/json
+
+{
+  "email": "19110283@student.hcmute.edu.vn", 
+  "password": "Dttv_11042001@" 
+}
+
+### Refresh token route
+POST http://localhost:5000/auth/refresh-token
+Content-Type: application/json
+
+{
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2Nzk0MTU0MTksImV4cCI6MTcxMDk3MzAxOSwiYXVkIjoiNjQxN2UxMzk3OTczZDk1YTBmM2RkOGQyIiwiaXNzIjoiYm9va3N0b3JlcGFnZS5jb20ifQ.xKPjbOvzYKge0mBWNJJv3BOktXso5ZYY_jV6UYEUpQg"
+}
+
+### Logout route
+DELETE http://localhost:5000/auth/logout
+Content-Type: application/json
+
+{
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2Nzk0MTU0NDMsImV4cCI6MTcxMDk3MzA0MywiYXVkIjoiNjQxN2UxMzk3OTczZDk1YTBmM2RkOGQyIiwiaXNzIjoiYm9va3N0b3JlcGFnZS5jb20ifQ.6eiZKp2YOEh3khAoWO_SGrYGM2t29ygIVAMdw5rpAFc"
+}
+
+### Request password reset route
+POST http://localhost:5000/auth/requestPasswordReset
+Content-Type: application/json
+
+{
+  "email": "19110283@student.hcmute.edu.vn",
+  "redirectUrl": "google.com"
+}
+
+### Reset password route
+POST http://localhost:5000/auth/resetPassword
+Content-Type: application/json
+
+{
+  "userId": "6417e1397973d95a0f3dd8d2",
+  "resetString": "f7d58507-ec0c-4904-84ba-a336597751ec6417e1397973d95a0f3dd8d2",
+  "newPassword": "Dttv_11042001@"
+}
