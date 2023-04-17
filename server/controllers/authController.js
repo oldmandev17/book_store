@@ -264,29 +264,4 @@ module.exports = {
       next(error);
     }
   },
-
-  google: async (req, res, next) => {
-    passport.authenticate('google', {
-      scope: ['email', 'profile'],
-    });
-  },
-
-  googleCallback: async (req, res, next) => {
-    passport.authenticate('google', {
-      successRedirect: 'auth/protected',
-      failureRedirect: 'auth/google/failure',
-    });
-  },
-
-  protected: async (req, res, next) => {
-    res.send({ user: req.user });
-  },
-
-  isLoggedIn: async (req, res, next) => {
-    return req.user ? next() : createError[401];
-  },
-
-  googleFailure: async (req, res, next) => {
-    res.send('Something went wrong!');
-  },
-};
+};  

@@ -8,6 +8,7 @@ const { verifyAccessToken } = require('./middlewares/jwtHelper');
 const passport = require('passport');
 const secssion = require('express-session');
 // const cros = require('cros');
+const auth = require('./routes/authRoute');
 
 const app = express();
 
@@ -17,16 +18,54 @@ const app = express();
 //     methods: 'GET,POST,PUT,DELETE,OPTIOND',
 //   })
 // );
-app.use(morgan('dev'));
+
 app.use(express.json());
+app.use('/auth', auth);
+app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
 app.use(secssion({ secret: 'books', resave: false, saveUninitialized: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 
-const auth = require('./routes/authRoute');
+function isLoggedIn(req, res, next) {
+  req.user ? next() : res.sendStatus(401);
+}
 
-app.use('/auth', auth);
+app.get('/', (req, res) => {
+  res.send('<a href="/auth/google">Authenticate with Google</a>');
+});
+
+app.get(
+  '/auth/google',
+  passport.authenticate('google', { scope: ['email', 'profile'] })
+);
+
+app.get(
+  '/auth/google/callback',
+  passport.authenticate('google', {
+    successRedirect: '/auth/protected',
+    failureRedirect: '/auth/google/failure',
+  })
+);
+
+app.get('/auth/protected', isLoggedIn, (req, res) => {
+  res.send({ user: req.user });
+});
+
+app.get('/logout', (req, res, next) => {
+  req.logout(function (err) {
+    if (err) {
+      return next(err);
+    }
+    res.redirect('/');
+  });
+  req.session.destroy();
+  res.send('Goodbye!');
+});
+
+app.get('/auth/google/failure', (req, res) => {
+  res.send('Failed to authenticate..');
+});
 
 app.use(async (req, res, next) => {
   next(createError.NotFound());

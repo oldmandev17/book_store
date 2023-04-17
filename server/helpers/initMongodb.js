@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 mongoose
-  .connect(process.env.DB_LOCAL_URI, {
+  .connect(process.env.DB_URI, {
     dbName: process.env.DB_NAME,
   })
   .then((con) => {
