@@ -22,12 +22,15 @@ const authorSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
-    required: [true, 'Please select the administrator who created this author.'],
+    required: [
+      true,
+      'Please select the administrator who created this author.',
+    ],
   },
   createdAt: {
     type: Date,
     default: Date.now,
-    required: [true, "Please select a time to create this author."]
+    required: [true, 'Please select a time to create this author.'],
   },
   updatedAt: {
     type: Date,
