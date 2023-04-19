@@ -31,6 +31,14 @@ const categorySchema = new mongoose.Schema({
     ref: 'parentCategory',
     required: [true, 'Please select the parent category for this category.'],
   },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'user',
+    required: [
+      true,
+      'Please select the administrator who created this category.',
+    ],
+  },
   createdAt: {
     type: Date,
     default: Date.now,
