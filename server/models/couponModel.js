@@ -8,7 +8,7 @@ const couponSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    required: [true, 'Please select the type for this coupon.'],
+    required: [true, 'Please enter the type for this coupon.'],
     enum: {
       values: ['percent', 'fixed_amount'],
       message: 'Please select the correct type for this coupon.',

@@ -31,7 +31,7 @@ passport.use(
       const user = await User.findOne({ email });
       if (!user) {
         const newUser = new User({
-          username: displayName,
+          name: displayName,
           email,
           password: '123',
           verified: true,

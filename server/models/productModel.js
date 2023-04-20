@@ -55,7 +55,7 @@ const productSchema = new mongoose.Schema({
       message: 'Please select the correct featured for this product.',
     },
   },
-  images: [
+  imageItems: [
     {
       url: {
         type: String,
@@ -63,7 +63,7 @@ const productSchema = new mongoose.Schema({
       },
     },
   ],
-  reviews: [
+  reviewItems: [
     {
       user: {
         type: mongoose.Schema.Types.ObjectId,
@@ -121,4 +121,4 @@ const productSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.Model('product', productSchema);
+module.exports = mongoose.model('product', productSchema);
