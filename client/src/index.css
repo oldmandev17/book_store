@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Ysabeau:ital,wght@1,500&display=swap');
+
+.Ysabeau {
+  font-family: 'Ysabeau', sans-serif;
+}
+
+.logo {
+  width: 65px !important;
+  height: 65px !important;
+}
+
+.logo-login {
+  width: 310px;
+  height: 310px;
+}
+
+.MainLogin {
+  height: 100%;
+}
+
+.logo_title {
+  margin-top: -30px !important;
+}
+
+.button {
+  background-color: #45528A !important;
+  color: white !important;
+
+}
+
+.button-back {
+  background-color: #B7B7B7 !important;
+  color: white !important;
+}
