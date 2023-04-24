@@ -11,4 +11,22 @@ const authLoginSchema = Joi.object({
   password: Joi.string().min(6).required(),
 });
 
-module.exports = { authRegisterSchema, authLoginSchema };
+const authorSchema = Joi.object({
+  name: Joi.string().required(),
+  introduction: Joi.string().required(),
+  image: Joi.string().required(),
+});
+
+const parentCategorySchema = Joi.object({
+  name: Joi.string().required(),
+  description: Joi.string(),
+  image: Joi.string().required(),
+  status: Joi.string().valid('active', 'inactive'),
+});
+
+module.exports = {
+  authRegisterSchema,
+  authLoginSchema,
+  authorSchema,
+  parentCategorySchema,
+};

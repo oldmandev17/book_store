@@ -26,6 +26,7 @@
     "passport": "^0.6.0",
     "passport-google-oauth2": "^0.2.0",
     "redis": "^4.6.5",
+    "slug": "^8.2.2",
     "uuid": "^9.0.0"
   }
 }

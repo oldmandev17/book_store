@@ -77,7 +77,7 @@ const sendVerificationEmail = async ({ _id, email }, res, next) => {
     const hashedUniqueString = await bcrypt.hash(uniqueString, saltRounds);
     const newVerification = new UserVerification({
       userId: _id,
-      uniqueString: (await hashedUniqueString).toString(),
+      uniqueString: hashedUniqueString.toString(),
       createdAt: Date.now(),
       expiresAt: Date.now() + 21600000,
     });
@@ -105,7 +105,7 @@ const sendResetEmail = async ({ _id, email }, redirectUrl, res, next) => {
     const hashedResetString = await bcrypt.hash(resetString, saltRounds);
     const newPasswordReset = new PasswordReset({
       userId: _id,
-      resetString: (await hashedResetString).toString(),
+      resetString: hashedResetString.toString(),
       createdAt: Date.now(),
       expiresAt: Date.now() + 3600000,
     });
@@ -125,7 +125,7 @@ module.exports = {
       const doesExist = await User.findOne({ email: result.email });
       if (doesExist)
         throw createError.Conflict(
-          `${result.email} is already been registered`
+          `${result.email} is already been registered.`
         );
 
       const user = new User({ ...result, verified: false });
@@ -264,4 +264,4 @@ module.exports = {
       next(error);
     }
   },
-};  
+};

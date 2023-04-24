@@ -21,6 +21,7 @@ const parentCategorySchema = new mongoose.Schema({
   status: {
     type: String,
     required: [true, 'Please select the status for this parent category.'],
+    default: 'active',
     enum: {
       values: ['active', 'inactive'],
       message: 'Please select the correct status for this parent category.',

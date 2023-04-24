@@ -9,6 +9,8 @@ const passport = require('passport');
 const secssion = require('express-session');
 // const cros = require('cros');
 const auth = require('./routes/authRoute');
+const author = require('./routes/authorRoute');
+const parentCategory = require('./routes/parentCategoryRoute');
 
 const app = express();
 
@@ -21,6 +23,8 @@ const app = express();
 
 app.use(express.json());
 app.use('/auth', auth);
+app.use('/author', author);
+app.use('/parentCategory', parentCategory);
 app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
 app.use(secssion({ secret: 'books', resave: false, saveUninitialized: true }));

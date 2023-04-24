@@ -12,7 +12,7 @@ const productSchema = new mongoose.Schema({
     unique: [true, 'The product slug must be unique.'],
   },
   description: {
-    type: Sring,
+    type: String,
     required: [true, 'Please enter the product description.'],
   },
   price: {
