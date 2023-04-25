@@ -87,7 +87,7 @@ module.exports = {
       await ParentCategory.updateOne(
         { slug: req.params.slug },
         {
-          ...req.body,
+          ...result,
           user: req.payload.userId,
           slug: slugGenerator,
           updatedAt: Date.now(),

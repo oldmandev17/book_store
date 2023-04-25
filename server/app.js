@@ -11,6 +11,7 @@ const secssion = require('express-session');
 const auth = require('./routes/authRoute');
 const author = require('./routes/authorRoute');
 const parentCategory = require('./routes/parentCategoryRoute');
+const category = require('./routes/categoryRoute');
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use(express.json());
 app.use('/auth', auth);
 app.use('/author', author);
 app.use('/parentCategory', parentCategory);
+app.use('/category', category);
 app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
 app.use(secssion({ secret: 'books', resave: false, saveUninitialized: true }));

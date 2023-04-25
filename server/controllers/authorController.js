@@ -86,7 +86,7 @@ module.exports = {
       await Author.updateOne(
         { slug: req.params.slug },
         {
-          ...req.body,
+          ...result,
           user: req.payload.userId,
           slug: slugGenerator,
           updatedAt: Date.now(),

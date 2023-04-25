@@ -21,7 +21,30 @@ const parentCategorySchema = Joi.object({
   name: Joi.string().required(),
   description: Joi.string(),
   image: Joi.string().required(),
-  status: Joi.string().valid('active', 'inactive'),
+  status: Joi.string().required().valid('active', 'inactive'),
+});
+
+const categorySchema = Joi.object({
+  name: Joi.string().required(),
+  description: Joi.string(),
+  image: Joi.string().required(),
+  status: Joi.string().required().valid('active', 'inactive'),
+  parentCategory: Joi.string().required(),
+});
+
+const productSchema = Joi.object({
+  name: Joi.string().required(),
+  description: Joi.string().required(),
+  price: Joi.number().required(),
+  discount: Joi.number().default(0),
+  quantity: Joi.number().required(),
+  status: Joi.string().required().valid('active', 'inactive'),
+  featured: Joi.string().required().valid('featured', 'featureless'),
+  imageItems: Joi.array().items({
+    url: Joi.string().required(),
+  }),
+  category: Joi.string().required(),
+  author: Joi.string().required(),
 });
 
 module.exports = {
@@ -29,4 +52,6 @@ module.exports = {
   authLoginSchema,
   authorSchema,
   parentCategorySchema,
+  categorySchema,
+  productSchema,
 };
