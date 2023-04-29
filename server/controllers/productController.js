@@ -115,6 +115,13 @@ module.exports = {
 
   deleteProduct: async (req, res, next) => {
     try {
+      const doesExist = await Product.findById(req.params.id);
+
+      if (!doesExist) throw createError.NotFound('Product does not exist.');
+
+      await Product.deleteOne({ _id: req.params.id });
+
+      res.status(204).send();
     } catch (error) {
       next(error);
     }

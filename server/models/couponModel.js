@@ -69,7 +69,7 @@ const couponSchema = new mongoose.Schema({
   },
   createdAt: {
     type: Date,
-    default: Data.now,
+    default: Date.now,
     required: [true, 'Please select a time to create this coupon.'],
   },
   updatedAt: {

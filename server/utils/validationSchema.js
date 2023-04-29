@@ -47,6 +47,18 @@ const productSchema = Joi.object({
   author: Joi.string().required(),
 });
 
+const couponSchema = Joi.object({
+  type: Joi.string().required().valid('percent', 'fixed_amount'),
+  value: Joi.number().required(),
+  startDate: Joi.date().required(),
+  endDate: Joi.date().required(),
+  minSpend: Joi.number().required(),
+  maxSpend: Joi.number().required(),
+  usesPerCustomer: Joi.number().required(),
+  usesPerCoupon: Joi.number().required(),
+  status: Joi.string().required().valid('active', 'expires', 'disable'),
+});
+
 module.exports = {
   authRegisterSchema,
   authLoginSchema,
@@ -54,4 +66,5 @@ module.exports = {
   parentCategorySchema,
   categorySchema,
   productSchema,
+  couponSchema,
 };

@@ -128,7 +128,7 @@ module.exports = {
           `${result.email} is already been registered.`
         );
 
-      const user = new User({ ...result, verified: false });
+      const user = new User({ ...result, verified: false, role: 'user' });
       const savedUser = await user.save();
 
       await sendVerificationEmail(savedUser, res, next);

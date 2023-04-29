@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { verifyAccessToken } = require('../middlewares/jwtHelper');
+const {
+  verifyAccessToken,
+  authorizeRoles,
+} = require('../middlewares/jwtHelper');
 const {
   createParentCategory,
   getParentCategoryDetail,
@@ -9,10 +12,16 @@ const {
   deleteParentCategory,
 } = require('../controllers/parentCategoryController');
 
-router.route('/create').post(verifyAccessToken, createParentCategory);
+router
+  .route('/admin/create')
+  .post(verifyAccessToken, authorizeRoles('admin'), createParentCategory);
 router.route('/:slug').get(getParentCategoryDetail);
 router.route('/').get(getParentCategoryList);
-router.route('/update/:slug').put(verifyAccessToken, updateParentCategory);
-router.route('/delete/:id').delete(verifyAccessToken, deleteParentCategory);
+router
+  .route('/admin/update/:slug')
+  .put(verifyAccessToken, authorizeRoles('admin'), updateParentCategory);
+router
+  .route('/admin/delete/:id')
+  .delete(verifyAccessToken, authorizeRoles('admin'), deleteParentCategory);
 
 module.exports = router;

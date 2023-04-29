@@ -1,6 +1,7 @@
 const JWT = require('jsonwebtoken');
 const createError = require('http-errors');
 const client = require('../helpers/initRedis');
+const User = require('../models/userModel');
 
 module.exports = {
   signAccessToken: (userId) => {
@@ -41,8 +42,10 @@ module.exports = {
     return async (req, res, next) => {
       const user = await User.findById(req.payload.userId);
       if (!roles.includes(user.role))
-        return createError.Unauthorized(
-          `Role (${req.user.role}) is not allow to access this resource!`
+        return next(
+          createError.Unauthorized(
+            `Role ${user.role} is not allow to access this resource.`
+          )
         );
       next();
     };

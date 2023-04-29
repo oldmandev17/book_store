@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { verifyAccessToken } = require('../middlewares/jwtHelper');
+const {
+  verifyAccessToken,
+  authorizeRoles,
+} = require('../middlewares/jwtHelper');
 const {
   createAuthor,
   getAuthorDetail,
@@ -9,10 +12,16 @@ const {
   getAuthorList,
 } = require('../controllers/authorController');
 
-router.route('/create').post(verifyAccessToken, createAuthor);
+router
+  .route('/admin/create')
+  .post(verifyAccessToken, authorizeRoles('admin'), createAuthor);
 router.route('/:slug').get(getAuthorDetail);
 router.route('/').get(getAuthorList);
-router.route('/update/:slug').put(verifyAccessToken, updateAuthor);
-router.route('/delete/:id').delete(verifyAccessToken, deleteAuthor);
+router
+  .route('/admin/update/:slug')
+  .put(verifyAccessToken, authorizeRoles('admin'), updateAuthor);
+router
+  .route('/admin/delete/:id')
+  .delete(verifyAccessToken, authorizeRoles('admin'), deleteAuthor);
 
 module.exports = router;
