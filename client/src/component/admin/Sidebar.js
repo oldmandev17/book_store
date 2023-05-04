@@ -20,7 +20,7 @@ const Sidebar = () => {
             <Box className="p-2 mt-12">
                 <Menu icon={<AiOutlineHome />} title="Trang chủ" link="/admin/home" />
                 <Menu icon={<BiCategory />} title="Thể loại" link="/admin/cate" />
-                <Menu icon={<BsPeopleFill />} title="Tác giả" />
+                <Menu icon={<BsPeopleFill />} title="Tác giả" link="/admin/author" />
                 <Menu icon={<AiOutlineShoppingCart />} title="Sản phẩm" link="/admin/product" />
                 <Menu icon={<RiBillLine />} title="Hoá đơn" link="/admin/bill" />
                 <Menu icon={<ImStatsBars />} title="Doanh thu" />

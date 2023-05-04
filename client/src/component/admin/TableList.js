@@ -6,6 +6,7 @@ import ModalDelete from './ModalDelete';
 import { MdDeleteOutline } from 'react-icons/md';
 import ModalEditCate from './cate/ModalList/ModalEditCate';
 import ModalEditProduct from './product/ModalEditProduct';
+import ModalEditAuthor from './author/ModalEditAuthor';
 
 const TableList = ({ rows, columns, type }) => {
 
@@ -51,6 +52,14 @@ const TableList = ({ rows, columns, type }) => {
                 type={type}
             />;
         }
+        else if (type === "author") {
+            return <ModalEditAuthor
+                handleClose={handleCloseModalEdit}
+                show={showModalEdit}
+                data={selectedRow}
+                type={type}
+            />;
+        }
     };
 
     const renderModalDelete = () => {
@@ -68,6 +77,15 @@ const TableList = ({ rows, columns, type }) => {
                 handleClose={handleCloseModalDelete}
                 show={showModalDelete}
                 title="Bạn thực sự muốn xoá sản phẩm này ?"
+                content="Xác nhận"
+                type={type}
+            />;
+        }
+        else if (type === "author") {
+            return <ModalDelete
+                handleClose={handleCloseModalDelete}
+                show={showModalDelete}
+                title="Bạn thực sự muốn xoá tác giả này ? Thay vào đó bạn có thể ẩn tác giả"
                 content="Xác nhận"
                 type={type}
             />;

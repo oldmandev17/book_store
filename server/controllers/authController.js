@@ -31,7 +31,7 @@ passport.use(
       const user = await User.findOne({ email });
       if (!user) {
         const newUser = new User({
-          username: displayName,
+          name: displayName,
           email,
           password: '123',
           verified: true,
@@ -77,7 +77,7 @@ const sendVerificationEmail = async ({ _id, email }, res, next) => {
     const hashedUniqueString = await bcrypt.hash(uniqueString, saltRounds);
     const newVerification = new UserVerification({
       userId: _id,
-      uniqueString: (await hashedUniqueString).toString(),
+      uniqueString: hashedUniqueString.toString(),
       createdAt: Date.now(),
       expiresAt: Date.now() + 21600000,
     });
@@ -105,7 +105,7 @@ const sendResetEmail = async ({ _id, email }, redirectUrl, res, next) => {
     const hashedResetString = await bcrypt.hash(resetString, saltRounds);
     const newPasswordReset = new PasswordReset({
       userId: _id,
-      resetString: (await hashedResetString).toString(),
+      resetString: hashedResetString.toString(),
       createdAt: Date.now(),
       expiresAt: Date.now() + 3600000,
     });
@@ -125,10 +125,10 @@ module.exports = {
       const doesExist = await User.findOne({ email: result.email });
       if (doesExist)
         throw createError.Conflict(
-          `${result.email} is already been registered`
+          `${result.email} is already been registered.`
         );
 
-      const user = new User({ ...result, verified: false });
+      const user = new User({ ...result, verified: false, role: 'user' });
       const savedUser = await user.save();
 
       await sendVerificationEmail(savedUser, res, next);
@@ -263,30 +263,5 @@ module.exports = {
     } catch (error) {
       next(error);
     }
-  },
-
-  google: async (req, res, next) => {
-    passport.authenticate('google', {
-      scope: ['email', 'profile'],
-    });
-  },
-
-  googleCallback: async (req, res, next) => {
-    passport.authenticate('google', {
-      successRedirect: 'auth/protected',
-      failureRedirect: 'auth/google/failure',
-    });
-  },
-
-  protected: async (req, res, next) => {
-    res.send({ user: req.user });
-  },
-
-  isLoggedIn: async (req, res, next) => {
-    return req.user ? next() : createError[401];
-  },
-
-  googleFailure: async (req, res, next) => {
-    res.send('Something went wrong!');
   },
 };

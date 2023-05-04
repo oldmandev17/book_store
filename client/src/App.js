@@ -8,6 +8,7 @@ import Product from "./pages/admins/products";
 import Bill from "./pages/admins/bills";
 import Account from "./pages/admins/accounts";
 import Setting from "./pages/admins/settings";
+import Author from "./pages/admins/authors";
 
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
           <Route path="bill" element={<Bill />} />
           <Route path="account" element={<Account />} />
           <Route path="setting" element={<Setting />} />
+          <Route path="author" element={<Author />} />
         </Route>
       </Routes>
     </BrowserRouter >

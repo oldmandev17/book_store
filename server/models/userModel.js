@@ -2,23 +2,92 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
 const userSchema = new mongoose.Schema({
-  username: {
+  name: {
     type: String,
-    required: true,
+    required: [true, 'Please enter the user name.'],
   },
   email: {
     type: String,
-    required: true,
-    lowercase: true,
-    unique: true,
+    required: [true, 'Please enter the user email.'],
+    lowercase: [true, 'The user email must be a lowercase.'],
+    unique: [true, 'The user email must be a unique.'],
   },
   password: {
     type: String,
-    required: true,
+    required: [true, 'Please enter the user password.'],
   },
   verified: {
     type: Boolean,
-    required: true,
+    default: false,
+    required: [true, 'Please enter the user verified.'],
+  },
+  phone: {
+    type: String,
+  },
+  birthday: {
+    type: Date,
+  },
+  gender: {
+    type: String,
+    enum: {
+      values: ['male', 'female'],
+      message: 'Please select the correct gender for this user.',
+    },
+  },
+  avatar: {
+    type: String,
+  },
+  role: {
+    type: String,
+    required: [true, 'Please enter the user role.'],
+    default: 'user',
+    enum: {
+      values: ['user', 'admin'],
+      message: 'Please select the correct role for this user.',
+    },
+  },
+  deliveryAddressItems: [
+    {
+      name: {
+        type: String,
+        required: [
+          true,
+          'Please enter the user name for this delivery address.',
+        ],
+      },
+      phone: {
+        type: String,
+        required: [
+          true,
+          'Please enter the user phone for this delivery address.',
+        ],
+      },
+      address: {
+        type: String,
+        required: [true, 'Please enter the address for this delivery address.'],
+      },
+      default: {
+        type: Boolean,
+        default: false,
+      },
+    },
+  ],
+  voucherItems: [
+    {
+      coupon: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'coupon',
+        required: [true, 'Please select the coupon for this voucher'],
+      },
+    },
+  ],
+  createdAt: {
+    type: Date,
+    default: Date.now,
+    required: [true, 'Please select this user registration period.'],
+  },
+  updatedAt: {
+    type: Date,
   },
 });
 

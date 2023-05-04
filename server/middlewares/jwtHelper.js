@@ -1,11 +1,14 @@
 const JWT = require('jsonwebtoken');
 const createError = require('http-errors');
 const client = require('../helpers/initRedis');
+const User = require('../models/userModel');
 
 module.exports = {
   signAccessToken: (userId) => {
     return new Promise((resolve, reject) => {
-      const payload = {};
+      const payload = {
+        userId,
+      };
       const secret = process.env.ACCESS_TOKEN_SECRET;
       const options = {
         expiresIn: process.env.JWT_ACCESS_EXPIRESIN,
@@ -31,6 +34,7 @@ module.exports = {
         return next(createError.Unauthorized(message));
       }
       req.payload = payload;
+
       next();
     });
   },
@@ -38,8 +42,10 @@ module.exports = {
     return async (req, res, next) => {
       const user = await User.findById(req.payload.userId);
       if (!roles.includes(user.role))
-        return createError.Unauthorized(
-          `Role (${req.user.role}) is not allow to access this resource!`
+        return next(
+          createError.Unauthorized(
+            `Role ${user.role} is not allow to access this resource.`
+          )
         );
       next();
     };

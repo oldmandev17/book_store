@@ -21,7 +21,7 @@ export default function AdminPage() {
                     <Box className="flex p-12 mt-20">
                         <MenuIcon icon={<MdManageAccounts />} title="Tài khoản" link="account" />
                         <MenuIcon icon={<BiCategoryAlt />} title="Thể loại" link="cate" />
-                        <MenuIcon icon={<BsPeopleFill />} title="Tác giả" link="account" />
+                        <MenuIcon icon={<BsPeopleFill />} title="Tác giả" link="author" />
                     </Box>
                     <Box className="flex p-12">
                         <MenuIcon icon={<TiShoppingCart />} title="Sản phẩm" link="product" />
