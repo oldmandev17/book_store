@@ -4,7 +4,10 @@ const createError = require('http-errors');
 const APIFeatures = require('../utils/apiFeatures');
 const client = require('../helpers/initRedis');
 const slug = require('slug');
-const { parentCategorySchema } = require('../utils/validationSchema');
+const {
+  parentCategorySchema,
+  statusSchema,
+} = require('../utils/validationSchema');
 
 module.exports = {
   createParentCategory: async (req, res, next) => {
@@ -24,7 +27,6 @@ module.exports = {
       const savedParentCategory = await parentCategory.save();
 
       res.status(201).json({
-        success: true,
         parentCategory: savedParentCategory,
       });
     } catch (error) {
@@ -40,7 +42,6 @@ module.exports = {
       if (!doesExist)
         throw createError.NotFound('Parent category does not exist.');
       res.status(200).json({
-        success: true,
         parentCategory: doesExist,
       });
     } catch (error) {
@@ -59,7 +60,6 @@ module.exports = {
       parentCategories = await apiFeatures.query.clone();
 
       res.status(200).json({
-        success: true,
         filteredCount,
         parentCategories,
       });
@@ -95,7 +95,6 @@ module.exports = {
       );
 
       res.status(200).json({
-        success: true,
         parentCategory: slugGenerator,
       });
     } catch (error) {
@@ -120,6 +119,28 @@ module.exports = {
 
       res.status(204).send();
     } catch (error) {
+      next(error);
+    }
+  },
+
+  updateStatusParentCategory: async (req, res, next) => {
+    try {
+      const result = await statusSchema.validateAsync(req.params.status);
+      for (let parentCategory of req.body.parentCategories) {
+        const doesExist = await ParentCategory.findById(parentCategory.id);
+        if (!doesExist) {
+          throw createError.NotFound('Parent category does not exist.');
+        }
+      }
+      req.body.parentCategories.forEach(async (parentCategory) => {
+        await ParentCategory.updateOne(
+          { _id: parentCategory.id },
+          { status: result }
+        );
+      });
+      res.status(200).json();
+    } catch (error) {
+      if (error.isJoi === true) error.status = 422;
       next(error);
     }
   },

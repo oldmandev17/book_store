@@ -14,6 +14,8 @@ const parentCategory = require('./routes/parentCategoryRoute');
 const category = require('./routes/categoryRoute');
 const product = require('./routes/productRoute');
 const coupon = require('./routes/couponRoute');
+const cart = require('./routes/cartRoute');
+const wishlist = require('./routes/wishlistRoute');
 
 const app = express();
 
@@ -27,10 +29,12 @@ const app = express();
 app.use(express.json());
 app.use('/auth', auth);
 app.use('/author', author);
-app.use('/parentCategory', parentCategory);
+app.use('/parent-category', parentCategory);
 app.use('/category', category);
 app.use('/product', product);
 app.use('/coupon', coupon);
+app.use('/cart', cart);
+app.use('/wishlist', wishlist);
 app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
 app.use(secssion({ secret: 'books', resave: false, saveUninitialized: true }));

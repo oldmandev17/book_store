@@ -70,17 +70,21 @@ const productSchema = new mongoose.Schema({
         ref: 'user',
         required: ['Please select the user who created this review.'],
       },
-      title: {
-        type: String,
-        required: [true, 'Please enter the title for this review.'],
-      },
       content: {
         type: String,
         required: [true, 'Please enter the content for this review.'],
       },
+      imageReviewItems: [
+        {
+          url: {
+            type: String,
+            required: [true, 'Please enter the image for this review.'],
+          },
+        },
+      ],
       rating: {
         type: Number,
-        default: 0,
+        default: 5,
         required: [true, 'Please enter the rating for this review.'],
       },
       createdAt: {

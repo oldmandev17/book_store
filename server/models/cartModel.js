@@ -8,26 +8,10 @@ const cartSchema = new mongoose.Schema({
         ref: 'product',
         required: [true, 'Please select the product for this cart.'],
       },
-      name: {
-        type: String,
-        required: [true, 'Please enter the product name.'],
-      },
-      image: {
-        type: String,
-        required: [true, 'Please enter the product image.'],
-      },
       quantity: {
         type: Number,
         default: 1,
         required: [true, 'Please enter the product quantity.'],
-      },
-      price: {
-        type: Number,
-        required: [true, 'Please enter the product price.'],
-      },
-      discount: {
-        type: Number,
-        default: 0,
       },
       createdAt: {
         type: Date,
@@ -46,6 +30,11 @@ const cartSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
     required: [true, 'Please select the user who created the cart.'],
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+    required: [true, 'Please select a time to create this cart.'],
   },
 });
 

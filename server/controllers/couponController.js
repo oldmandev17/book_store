@@ -4,6 +4,23 @@ const createError = require('http-errors');
 const { couponSchema } = require('../utils/validationSchema');
 const voucherCode = require('voucher-code-generator');
 const APIFeature = require('../utils/apiFeatures');
+const CronJob = require('cron').CronJob;
+
+const job = new CronJob('* * * * * *', async function () {
+  try {
+    const coupons = await Coupon.find();
+    for (let coupon of coupons) {
+      if (coupon.endDate < Date.now())
+        await Coupon.updateOne(
+          { code: coupon.code },
+          { status: 'expires', updatedAt: Date.now() }
+        );
+    }
+  } catch (error) {
+    console.log(error);
+  }
+});
+job.start();
 
 module.exports = {
   createCoupon: async (req, res, next) => {
@@ -24,7 +41,6 @@ module.exports = {
       const savedCoupon = await coupon.save();
 
       res.status(201).json({
-        success: true,
         coupon: savedCoupon,
       });
     } catch (error) {
@@ -51,7 +67,6 @@ module.exports = {
       );
 
       res.status(200).json({
-        success,
         code: req.params.code,
       });
     } catch (error) {
@@ -67,11 +82,10 @@ module.exports = {
       if (!doesExist) throw createError.NotFound('Coupon does not exist.');
 
       res.status(200).json({
-        success: true,
         coupon: doesExist,
       });
     } catch (error) {
-      next(eror);
+      next(error);
     }
   },
 
@@ -86,7 +100,6 @@ module.exports = {
       coupons = await apiFeatures.query.clone();
 
       res.status(200).json({
-        success: true,
         filteredCount,
         coupons,
       });

@@ -24,7 +24,6 @@ module.exports = {
       const savedAuthor = await author.save();
 
       res.status(201).json({
-        success: true,
         author: savedAuthor,
       });
     } catch (error) {
@@ -40,7 +39,6 @@ module.exports = {
       if (!doesExist) throw createError.NotFound('Author does not exist.');
 
       res.status(200).json({
-        success: true,
         author: doesExist,
       });
     } catch (error) {
@@ -59,7 +57,6 @@ module.exports = {
       authors = await apiFeatures.query.clone();
 
       res.status(200).json({
-        success: true,
         filteredCount,
         authors,
       });
@@ -94,7 +91,6 @@ module.exports = {
       );
 
       res.status(200).json({
-        success: true,
         author: slugGenerator,
       });
     } catch (error) {

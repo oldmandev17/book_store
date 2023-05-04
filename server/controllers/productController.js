@@ -1,11 +1,17 @@
 const Product = require('../models/productModel');
 const Author = require('../models/authorModel');
 const Category = require('../models/categoryModel');
+const Order = require('../models/orderModel');
 const APIFeatures = require('../utils/apiFeatures');
 const client = require('../helpers/initRedis');
 const slug = require('slug');
 const createError = require('http-errors');
-const { productSchema } = require('../utils/validationSchema');
+const {
+  productSchema,
+  statusSchema,
+  featuredSchema,
+  reviewSchema,
+} = require('../utils/validationSchema');
 
 module.exports = {
   createProduct: async (req, res, next) => {
@@ -13,9 +19,15 @@ module.exports = {
       const result = await productSchema.validateAsync(req.body);
       const slugGenerator = slug(result.name);
       const slugExist = await Product.findOne({ slug: slugGenerator });
+      const authorExist = await Author.findById(result.author);
+      const categoryExist = await Category.findById(result.category);
 
       if (slugExist)
         throw createError.Conflict(`${slugGenerator}is already been existed.`);
+
+      if (!authorExist) throw createError.NotFound('Author does not exist.');
+      if (!categoryExist)
+        throw createError.NotFound('Category does not exist.');
 
       const product = new Product({
         ...result,
@@ -25,7 +37,6 @@ module.exports = {
       const savedProduct = await product.save();
 
       res.status(201).json({
-        success: true,
         product: savedProduct,
       });
     } catch (error) {
@@ -43,22 +54,31 @@ module.exports = {
       const result = await productSchema.validateAsync(req.body);
       const slugGenerator = slug(result.name);
       const slugExist = await Product.find({ slug: slugGenerator });
+      const authorExist = await Author.findById(result.author);
+      const categoryExist = await Category.findById(result.category);
 
       if (slugExist.filter((product) => product.slug !== req.params.slug) > 0)
         throw createError.Conflict(`${slugGenerator} is already been existed.`);
+      if (!authorExist) throw createError.NotFound('Author does not exist.');
+      if (!categoryExist)
+        throw createError.NotFound('Category does not exist.');
 
-      await Product.updateOne(
-        { slug: req.params.sulg },
+      await Product.findByIdAndUpdate(
+        doesExist._id,
         {
           ...result,
           user: req.payload.userId,
           slug: slugGenerator,
           updatedAt: Date.now(),
+        },
+        {
+          new: true,
+          runValidators: true,
+          useFindAndModify: false,
         }
       );
 
       res.status(200).json({
-        success: true,
         slug: slugGenerator,
       });
     } catch (error) {
@@ -74,7 +94,6 @@ module.exports = {
       if (!doesExist) throw createError.NotFound('Product does not exist.');
 
       res.status(200).json({
-        success: true,
         product: doesExist,
       });
     } catch (error) {
@@ -104,7 +123,6 @@ module.exports = {
       products = await apiFeatures.query.clone();
 
       res.status(200).json({
-        success: true,
         filteredCount,
         products,
       });
@@ -123,6 +141,62 @@ module.exports = {
 
       res.status(204).send();
     } catch (error) {
+      next(error);
+    }
+  },
+
+  updateStatusProduct: async (req, res, next) => {
+    try {
+      const result = await statusSchema.validateAsync(req.params.status);
+
+      for (let product of req.body.products) {
+        const doesExist = await Product.findById(product.id);
+        if (!doesExist) throw createError.NotFound('Product does not exist.');
+      }
+
+      req.body.products.forEach(async (product) => {
+        await Product.updateOne(
+          { _id: product.id },
+          { status: result, updatedAt: Date.now() }
+        );
+      });
+      res.status(200).send();
+    } catch (error) {
+      if (error.isJoi === true) error.status = 422;
+      next(error);
+    }
+  },
+
+  updateFeaturedProduct: async (req, res, next) => {
+    try {
+      const result = await featuredSchema.validateAsync(req.params.featured);
+
+      for (let product of req.body.products) {
+        const doesExist = await Product.findById(product.id);
+        if (!doesExist) throw createError.NotFound('Product does not exist.');
+      }
+
+      req.body.products.forEach(async (product) => {
+        await Product.updateOne(
+          { _id: product.id },
+          { featured: result, updatedAt: Date.now() }
+        );
+      });
+      res.status(200).send();
+    } catch (error) {
+      if (error.isJoi === true) error.status = 422;
+      next(error);
+    }
+  },
+
+  createReviewProduct: async (req, res, next) => {
+    try {
+      const result = await reviewSchema.validateAsync(req.body);
+      const productExist = await Product.findById(req.params.id);
+
+      if (!productExist) throw createError.NotFound('Product does not exist.');
+    } catch (error) {
+      if (error.isJoi === true) error.status = 422;
       next(error);
     }
   },

@@ -1,8 +1,16 @@
 const createError = require('http-errors');
 const User = require('../models/userModel');
+const Wishlist = require('../models/wishlistModel');
+const Cart = require('../models/cartModel');
+const Coupon = require('../models/couponModel');
+const APIFeatures = require('../utils/apiFeatures');
 const {
   authRegisterSchema,
   authLoginSchema,
+  addressSchema,
+  voucherSchema,
+  updatePasswordSchema,
+  profileSchema,
 } = require('../utils/validationSchema');
 const {
   signAccessToken,
@@ -64,7 +72,7 @@ const transporter = nodemailer.createTransport({
 const sendVerificationEmail = async ({ _id, email }, res, next) => {
   try {
     const currentUrl = 'http://127.0.0.1:5000/';
-    const uniqueString = '123' + _id;
+    const uniqueString = uuidv4() + _id;
     const mailOptions = {
       from: process.env.AUTH_EMAIL,
       to: email,
@@ -152,10 +160,14 @@ module.exports = {
         if (!isMatch)
           throw createError.Unauthorized('Username/password not exist');
         await User.updateOne({ _id: userId }, { verified: true });
+        await Wishlist.create({
+          user: userId,
+        });
+        await Cart.create({
+          user: userId,
+        });
         await UserVerification.deleteOne({ userId });
-        await signAccessToken(userId);
-        await signRefreshToken(userId);
-        res.send('Verified');
+        res.send('Verified email');
       }
     } catch (error) {
       next(error);
@@ -164,7 +176,7 @@ module.exports = {
 
   verified: async (req, res, next) => {
     try {
-      res.send('Verified email');
+      res.send('Verified');
     } catch (error) {
       next(error);
     }
@@ -260,6 +272,259 @@ module.exports = {
         await PasswordReset.deleteOne({ userId });
         res.send('Reset password successfully');
       }
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  getProfile: async (req, res, next) => {
+    try {
+      const doesExist = await User.findById(req.payload.userId);
+
+      if (!doesExist) throw createError.NotFound('User does not exist.');
+
+      res.status(200).json({
+        profile: doesExist,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  addDeliveryAddress: async (req, res, next) => {
+    try {
+      const doesExist = await User.findById(req.payload.userId);
+
+      const result = await addressSchema.validateAsync(req.body);
+
+      if (doesExist.deliveryAddressItems.length < 1) result.default = true;
+      else {
+        if (result.default === true)
+          doesExist.deliveryAddressItems.forEach(
+            (address) => (address.default = false)
+          );
+      }
+
+      doesExist.deliveryAddressItems.unshift(result);
+      doesExist.deliveryAddressItems.sort((a, b) => b.default - a.default);
+
+      await User.updateOne(
+        { _id: req.payload.userId },
+        { deliveryAddressItems: doesExist.deliveryAddressItems }
+      );
+
+      res.status(200).send();
+    } catch (error) {
+      if (error.isJoi === true) error.status = 422;
+      next(error);
+    }
+  },
+
+  updateDeliveryAddress: async (req, res, next) => {
+    try {
+      const result = await addressSchema.validateAsync(req.body);
+      const userExist = await User.findById(req.payload.userId);
+
+      const addressExists = userExist.deliveryAddressItems.filter(
+        (address) => address._id.toString() === req.params.id
+      );
+
+      if (addressExists.length < 1)
+        throw createError.NotFound('Address does not exist.');
+      if (addressExists[0].default === true && result.default === false)
+        throw createError.NotAcceptable('Address is a default.');
+      if (result.default === true)
+        userExist.deliveryAddressItems.forEach(
+          (address) => (address.default = false)
+        );
+      for (let address of userExist.deliveryAddressItems) {
+        if (address._id.toString() === req.params.id) {
+          address.name = result.name;
+          address.phone = result.phone;
+          address.address = result.address;
+          address.default = result.default;
+        }
+      }
+      userExist.deliveryAddressItems.sort((a, b) => b.default - a.default);
+      await User.updateOne(
+        { _id: req.payload.userId },
+        { deliveryAddressItems: userExist.deliveryAddressItems }
+      );
+
+      res.status(200).send();
+    } catch (error) {
+      if (error.isJoi === true) error.status = 422;
+      next(error);
+    }
+  },
+
+  updateDefaultDeliveryAddress: async (req, res, next) => {
+    try {
+      const userExist = await User.findById(req.payload.userId);
+
+      const addressExists = userExist.deliveryAddressItems.filter(
+        (address) => address._id.toString() === req.params.id
+      );
+
+      if (addressExists.length < 1)
+        throw createError.NotFound('Addres does not exist.');
+
+      if (addressExists[0].default === true)
+        throw createError.NotAcceptable('Address is already default.');
+
+      userExist.deliveryAddressItems.forEach(
+        (address) => (address.default = false)
+      );
+
+      for (let address of userExist.deliveryAddressItems) {
+        if (address._id.toString() === req.params.id) address.default = true;
+      }
+
+      userExist.deliveryAddressItems.sort((a, b) => b.default - a.default);
+      await User.updateOne(
+        { _id: req.payload.userId },
+        { deliveryAddressItems: userExist.deliveryAddressItems }
+      );
+      res.status(200).send();
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  removeDeliveryAddress: async (req, res, next) => {
+    try {
+      const userExist = await User.findById(req.payload.userId);
+
+      const addressExists = userExist.deliveryAddressItems.filter(
+        (address) => address._id.toString() === req.params.id
+      );
+
+      if (addressExists.length < 1)
+        throw createError.NotFound('Address does not exist.');
+
+      if (addressExists[0].default === true)
+        throw createError.NotAcceptable('Address does not delete.');
+
+      const newDeliveryAddressItems = userExist.deliveryAddressItems.filter(
+        (address) => address._id.toString() !== req.params.id
+      );
+      newDeliveryAddressItems.sort((a, b) => b.default - a.default);
+
+      await User.updateOne(
+        { _id: req.payload.userId },
+        { deliveryAddressItems: newDeliveryAddressItems }
+      );
+
+      res.status(200).send();
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  addVoucher: async (req, res, next) => {
+    try {
+      const result = await voucherSchema.validateAsync(req.params.voucher);
+      const userExist = await User.findById(req.payload.userId);
+
+      const voucherExist = await Coupon.findOne({ code: result });
+
+      if (!voucherExist) throw createError.NotFound('Coupon does not exist.');
+
+      const voucherUserExist = userExist.voucherItems.filter(
+        (voucher) => voucher.coupon === result
+      );
+
+      if (voucherUserExist.length > 0)
+        throw createError.NotAcceptable('Coupon is already exist.');
+
+      if (voucherExist.status !== 'active')
+        throw createError.NotAcceptable('The coupon is no longer active.');
+
+      if (voucherExist.endDate < Date.now() || voucherExist.usesPerCoupon === 0)
+        throw createError.NotAcceptable('Coupon has expired');
+
+      userExist.voucherItems.unshift({ coupon: result });
+
+      await User.updateOne(
+        { _id: req.payload.userId },
+        { voucherItems: userExist.voucherItems }
+      );
+
+      res.status(200).send();
+    } catch (error) {
+      if (error.isJoi === true) error.status = 422;
+      next(error);
+    }
+  },
+
+  updatePassword: async (req, res, next) => {
+    try {
+      const result = await updatePasswordSchema.validateAsync(req.body);
+
+      const isMatch = await doesExist.isValidPassword(result.password);
+
+      if (!isMatch) throw createError.Unauthorized('Password incorrect.');
+
+      const saltRounds = 10;
+      const hashedNewPassword = await bcrypt.hash(
+        result.newPassword,
+        saltRounds
+      );
+      await User.updateOne(
+        { _id: req.payload.userId },
+        { password: hashedNewPassword, updatedAt: Date.now() }
+      );
+
+      res.status(200).send();
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  updateProfile: async (req, res, next) => {
+    try {
+      const result = await profileSchema.validateAsync(req.body);
+
+      const doesExist = await User.findById(req.payload.userId);
+      if (!doesExist) throw createError.NotFound('User does not exist.');
+      if (doesExist.verified === false)
+        throw createError.NotAcceptable('User does not verify.');
+
+      await User.updateOne(
+        { _id: req.payload.userId },
+        { ...result, updatedAt: Date.now() }
+      );
+
+      res.status(200).send();
+    } catch (error) {
+      if (error.isJoi === true) error.status = 422;
+      next(error);
+    }
+  },
+
+  getUserDetail: async (req, res, next) => {
+    try {
+      const doesExist = await User.findById(req.params.id);
+
+      if (!doesExist) throw createError.NotFound('User does not exist.');
+
+      res.status(200).json({ user: doesExist });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  getUserList: async (req, res, next) => {
+    try {
+      const apiFeatures = new APIFeatures(User.find(), req.query)
+        .search()
+        .filter();
+      let users = await apiFeatures.query;
+      const filteredCount = users.length;
+      apiFeatures.sorting().pagination();
+      users = await apiFeatures.query.clone();
+
+      res.status(200).json({ filteredCount, users });
     } catch (error) {
       next(error);
     }

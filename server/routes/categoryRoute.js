@@ -10,6 +10,7 @@ const {
   getCategoryDetail,
   getCategoryList,
   deleteCategory,
+  updateStatusCategory,
 } = require('../controllers/categoryController');
 
 router
@@ -23,5 +24,8 @@ router
 router
   .route('/admin/delete/:id')
   .delete(verifyAccessToken, authorizeRoles('admin'), deleteCategory);
+router
+  .route('/admin/update-status/:status')
+  .put(verifyAccessToken, authorizeRoles('admin'), updateStatusCategory);
 
 module.exports = router;

@@ -10,6 +10,8 @@ const {
   getProductDetail,
   getProductList,
   deleteProduct,
+  updateStatusProduct,
+  updateFeaturedProduct,
 } = require('../controllers/productController');
 
 router
@@ -23,5 +25,11 @@ router
 router
   .route('/admin/delete/:id')
   .delete(verifyAccessToken, authorizeRoles('admin'), deleteProduct);
+router
+  .route('/admin/update-status/:status')
+  .put(verifyAccessToken, authorizeRoles('admin'), updateStatusProduct);
+router
+  .route('/admin/update-featured/:featured')
+  .put(verifyAccessToken, authorizeRoles('admin'), updateFeaturedProduct);
 
 module.exports = router;
