@@ -28,22 +28,22 @@ export default function Forgot(props) {
     return (
         <>
             <Header />
-            <Box sx={{ bgcolor: '#152259', heght: 200 }} className="flex justify-center p-24 MainLogin">
+            <Box sx={{ bgcolor: '#152259' }} className="flex justify-center p-24 MainLogin !h-fit">
                 <Box className="text-white text-center mr-20">
                     <Box component='img' src={"/image/whitecat.png"} alt="image" className="logo-login mx-auto" />
                     <Typography className="!font-bold !text-6xl logo_title !font-['Ysabeau']">Meo Meo</Typography>
                     <Typography className="!text-2xl !mt-6">Nhà sách yêu thích dành cho Gen Z</Typography>
                     <Typography className="!text-2xl">yêu thích ở Việt Nam</Typography>
                 </Box>
-                <Box className="bg-white p-16 rounded-2xl h-full">
-                    <form className="w-80">
-                        <Typography className="!text-4xl text-center">Quên mật khẩu</Typography>
+                <Box className="bg-white p-14 rounded-2xl w-1/3">
+                    <form>
+                        <Typography className="!text-4xl !font-bold text-center color">Quên mật khẩu</Typography>
                         <Input
                             placeholder="Email"
                             variant="soft"
-                            className="mt-6 mb-6"
+                            className="mt-12 mb-6"
                         />
-                        <Button className="button w-full !text-xl !mb-2" onClick={handleOpenModal}>TIẾP THEO</Button>
+                        {!sendEmail && <Button className="button w-full !text-xl !mb-2" onClick={handleOpenModal}>TIẾP THEO</Button>}
                         {sendEmail && <Button className="button w-full !text-xl !mb-2">GỬI LẠI EMAIL</Button>}
                         <ModalEmail
                             handleClose={handleCloseModal}
@@ -52,6 +52,10 @@ export default function Forgot(props) {
                         >
                         </ModalEmail>
                     </form>
+                    <Box className="mt-20 text-center">
+                        <Typography>Quay lại trang đăng nhập?</Typography>
+                        <Link className="!no-underline" href="/login">Đăng nhập</Link>
+                    </Box>
                 </Box>
             </Box>
             <Footer />

@@ -4,6 +4,7 @@ module.exports = {
   theme: {
     fontFamily: {
       'Ysabeau': ['Ysabeau', 'sans-serif'],
+      'KumbhSans': ['Kumbh Sans', 'sans-serif'],
     },
     extend: {},
   },

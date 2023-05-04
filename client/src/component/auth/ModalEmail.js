@@ -23,7 +23,7 @@ function ModalEmail(props) {
                 </Box>
             </Box>
         </Modal>
-    );
+    )
 }
 
 export default ModalEmail;

@@ -21,16 +21,16 @@ export default function SignUp(props) {
     return (
         <>
             <Header />
-            <Box sx={{ bgcolor: '#152259', heght: 200 }} className="flex justify-center p-24 MainLogin">
+            <Box sx={{ bgcolor: '#152259' }} className="flex justify-center p-24 MainLogin !h-fit">
                 <Box className="text-white text-center mr-20">
                     <Box component='img' src={"./image/whitecat.png"} alt="image" className="logo-login mx-auto" />
                     <Typography className="!font-bold !text-6xl logo_title !font-['Ysabeau']">MeoMeo</Typography>
                     <Typography className="!text-2xl !mt-6">Nhà sách yêu thích dành cho Gen Z</Typography>
                     <Typography className="!text-2xl">yêu thích ở Việt Nam</Typography>
                 </Box>
-                <Box className="bg-white p-16 rounded-2xl h-full">
+                <Box className="bg-white p-16 rounded-2xl h-full w-1/3">
                     <form className="w-full mx-auto " action="/confirm">
-                        < Typography className="!text-4xl text-center">Đăng ký</Typography>
+                        < Typography className="!text-4xl !font-bold text-center color">Đăng ký</Typography>
                         <Input
                             placeholder="User name"
                             variant="soft"
@@ -72,7 +72,7 @@ export default function SignUp(props) {
                     </Box>
                     <Box className="flex mt-20 text-center justify-center">
                         <Typography className="italic !mr-2">Bạn đã có tài khoản?</Typography>
-                        <Link className="!no-underline italic" href="login">Đăng nhập</Link>
+                        <Link className="!no-underline" href="login">Đăng nhập</Link>
                     </Box>
                 </Box >
             </Box >

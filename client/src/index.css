@@ -3,9 +3,26 @@
 @tailwind utilities;
 
 @import url('https://fonts.googleapis.com/css2?family=Ysabeau:ital,wght@1,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@100;200;300&family=Ysabeau:ital,wght@1,500&display=swap');
+
+html {
+  height: 100% !important;
+}
+
+body {
+  height: 100% !important;
+}
+
+#root {
+  height: 100% !important;
+}
 
 .Ysabeau {
   font-family: 'Ysabeau', sans-serif;
+}
+
+.KumbhSans {
+  font-family: 'Kumbh Sans', sans-serif !important;
 }
 
 .logo {
@@ -22,6 +39,10 @@
   height: 100%;
 }
 
+.Background {
+  background-color: #152C70;
+}
+
 .logo_title {
   margin-top: -30px !important;
 }
@@ -32,7 +53,72 @@
 
 }
 
+.button-out {
+  background-color: #152C70 !important;
+  color: white !important;
+
+}
+
+.button-menu {
+  background-color: #EFF3FA !important;
+}
+
+.button:hover,
+.button-out:hover,
+.button-menu:hover,
+.button-back:hover {
+  opacity: 80%;
+  scale: 90%;
+}
+
 .button-back {
   background-color: #B7B7B7 !important;
   color: white !important;
+}
+
+.color {
+  color: #152C70 !important;
+}
+
+.xl {
+  font-size: 170px !important;
+}
+
+.hover-upload {
+  border: 1px solid #152C70;
+  border-radius: 20px;
+}
+
+.hover-upload:hover {
+  opacity: 80%;
+  background: url('../public/image/logo-upload.png');
+  background-size: cover;
+}
+
+.close {
+  margin-top: -20px !important;
+  margin-right: -20px !important;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* thêm nút scroll tùy chỉnh */
+.my-scroll-container {
+  overflow-x: scroll;
+  scrollbar-width: none;
+}
+
+.my-scroll-container::-webkit-scrollbar-track {
+  background-color: #f4f4f4;
+}
+
+.my-scroll-container::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 5px;
+}
+
+.support {
+  border-radius: 100px;
 }
