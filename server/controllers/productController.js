@@ -195,6 +195,9 @@ module.exports = {
       const productExist = await Product.findById(req.params.id);
 
       if (!productExist) throw createError.NotFound('Product does not exist.');
+
+      const orderExists = await Order.find({ user: req.params.id });
+
     } catch (error) {
       if (error.isJoi === true) error.status = 422;
       next(error);

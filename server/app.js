@@ -1,4 +1,5 @@
 const express = require('express');
+const cros = require('cors');
 const morgan = require('morgan');
 const createError = require('http-errors');
 require('dotenv').config({ path: './configs/.env' });
@@ -7,7 +8,6 @@ require('./helpers/initRedis');
 const { verifyAccessToken } = require('./middlewares/jwtHelper');
 const passport = require('passport');
 const secssion = require('express-session');
-// const cros = require('cros');
 const auth = require('./routes/authRoute');
 const author = require('./routes/authorRoute');
 const parentCategory = require('./routes/parentCategoryRoute');
@@ -16,15 +16,16 @@ const product = require('./routes/productRoute');
 const coupon = require('./routes/couponRoute');
 const cart = require('./routes/cartRoute');
 const wishlist = require('./routes/wishlistRoute');
+const order = require('./routes/orderRoute');
 
 const app = express();
 
-// app.use(
-//   cros({
-//     origin: ['http://localhost:3000'],
-//     methods: 'GET,POST,PUT,DELETE,OPTIOND',
-//   })
-// );
+app.use(
+  cros({
+    origin: ['http://localhost:3000'],
+    methods: 'GET,POST,PUT,DELETE,OPTIOND',
+  })
+);
 
 app.use(express.json());
 app.use('/auth', auth);
@@ -35,6 +36,7 @@ app.use('/product', product);
 app.use('/coupon', coupon);
 app.use('/cart', cart);
 app.use('/wishlist', wishlist);
+app.use('/order', order);
 app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
 app.use(secssion({ secret: 'books', resave: false, saveUninitialized: true }));

@@ -19,6 +19,7 @@ const {
 } = require('../middlewares/jwtHelper');
 const client = require('../helpers/initRedis');
 const UserVerification = require('../models/userVerificationModel');
+const UserLogin = require('../models/userLoginModel');
 const PasswordReset = require('../models/passwordResetModel');
 const { v4: uuidv4 } = require('uuid');
 const nodemailer = require('nodemailer');
@@ -69,7 +70,12 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const sendVerificationEmail = async ({ _id, email }, res, next) => {
+const sendVerificationEmail = async (
+  { _id, email },
+  urlRedirect,
+  res,
+  next
+) => {
   try {
     const currentUrl = 'http://127.0.0.1:5000/';
     const uniqueString = uuidv4() + _id;
@@ -88,10 +94,11 @@ const sendVerificationEmail = async ({ _id, email }, res, next) => {
       uniqueString: hashedUniqueString.toString(),
       createdAt: Date.now(),
       expiresAt: Date.now() + 21600000,
+      urlRedirect,
     });
     await newVerification.save();
     await transporter.sendMail(mailOptions);
-    res.send('Verification email sent');
+    res.status(201).send('Verification email sent');
   } catch (error) {
     next(error);
   }
@@ -130,6 +137,11 @@ module.exports = {
     try {
       const result = await authRegisterSchema.validateAsync(req.body);
 
+      if (result.password !== result.confirmPassword)
+        throw createError.Conflict(
+          'Password and password confirm does not match.'
+        );
+
       const doesExist = await User.findOne({ email: result.email });
       if (doesExist)
         throw createError.Conflict(
@@ -139,7 +151,7 @@ module.exports = {
       const user = new User({ ...result, verified: false, role: 'user' });
       const savedUser = await user.save();
 
-      await sendVerificationEmail(savedUser, res, next);
+      await sendVerificationEmail(savedUser, result.currentUrl, res, next);
     } catch (error) {
       if (error.isJoi === true) error.status = 422;
       next(error);
@@ -152,9 +164,14 @@ module.exports = {
       const userVerification = await UserVerification.findOne({ userId });
       if (!userVerification)
         throw createError.NotFound('User not exist or verified already.');
-      const { expiresAt, uniqueString: hashedUniqueString } = userVerification;
+      const {
+        expiresAt,
+        uniqueString: hashedUniqueString,
+        urlRedirect,
+      } = userVerification;
       if (expiresAt < Date.now()) {
         await User.deleteOne({ _id: userId });
+        throw createError.NotAcceptable('User verifycation is expired.');
       } else {
         const isMatch = await bcrypt.compare(uniqueString, hashedUniqueString);
         if (!isMatch)
@@ -167,7 +184,18 @@ module.exports = {
           user: userId,
         });
         await UserVerification.deleteOne({ userId });
-        res.send('Verified email');
+        const loginString = uuidv4() + userId;
+        await UserLogin.deleteMany({ userId });
+        const saltRounds = 10;
+        const hashedLoginString = await bcrypt.hash(loginString, saltRounds);
+        const newUserLogin = new UserLogin({
+          userId,
+          loginString: hashedLoginString.toString(),
+          createdAt: Date.now(),
+          expiresAt: Date.now() + 3600000,
+        });
+        await newUserLogin.save();
+        res.redirect(urlRedirect + '/' + userId + '/' + loginString);
       }
     } catch (error) {
       next(error);
@@ -176,7 +204,24 @@ module.exports = {
 
   verified: async (req, res, next) => {
     try {
-      res.send('Verified');
+      const { userId, loginString } = req.params;
+      const userLogin = await UserLogin.findOne({ userId });
+      if (!userLogin)
+        throw createError.NotFound('User not exist or login already.');
+      const { expiresAt, loginString: hashedLoginString } = userLogin;
+      if (expiresAt < Date.now()) {
+        await UserLogin.deleteOne({ userId });
+        throw createError.NotAcceptable('User login is expired.');
+      } else {
+        const isMatch = await bcrypt.compare(loginString, hashedLoginString);
+        if (!isMatch)
+          throw createError.Unauthorized('Username/password not valid');
+        const accessToken = await signAccessToken(userId);
+        const refreshToken = await signRefreshToken(userId);
+
+        UserLogin.deleteOne({ userId });
+        res.send({ accessToken, refreshToken });
+      }
     } catch (error) {
       next(error);
     }
@@ -226,7 +271,7 @@ module.exports = {
 
   logout: async (req, res, next) => {
     try {
-      const { refreshToken } = req.body;
+      const { refreshToken } = req.params;
       if (!refreshToken) throw createError.BadRequest();
       const userId = await verifyRefreshToken(refreshToken);
 
@@ -262,6 +307,7 @@ module.exports = {
       const { expiresAt, resetString: hashedResetString } = user;
       if (expiresAt < Date.now()) {
         await PasswordReset.deleteOne({ userId });
+        throw createError.NotAcceptable('Reset password is expired.');
       } else {
         const isMatch = await bcrypt.compare(resetString, hashedResetString);
         if (!isMatch)
@@ -348,7 +394,10 @@ module.exports = {
       userExist.deliveryAddressItems.sort((a, b) => b.default - a.default);
       await User.updateOne(
         { _id: req.payload.userId },
-        { deliveryAddressItems: userExist.deliveryAddressItems }
+        {
+          deliveryAddressItems: userExist.deliveryAddressItems,
+          updatedAt: Date.now(),
+        }
       );
 
       res.status(200).send();

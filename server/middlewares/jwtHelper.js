@@ -31,7 +31,7 @@ module.exports = {
       if (err) {
         const message =
           err.name === 'JsonWebTokenError' ? 'Unauthorized' : err.message;
-        return next(createError.Unauthorized(message));
+        return next(createError.Forbidden(message));
       }
       req.payload = payload;
 

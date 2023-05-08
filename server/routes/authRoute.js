@@ -28,13 +28,13 @@ const {
 
 router.route('/register').post(register);
 router.route('/verify/:userId/:uniqueString').get(verifyEmail);
-router.route('/verified').get(verified);
+router.route('/verified/:userId/:loginString').get(verified);
 router.route('/login').post(login);
 router.route('/refresh-token').post(refreshToken);
-router.route('/logout').delete(logout);
+router.route('/logout/:refreshToken').delete(logout);
 router.route('/requestPasswordReset').post(requestPasswordReset);
 router.route('/resetPassword').post(resetPassword);
-router.route('/profile').get(verifyAccessToken, getProfile);
+router.route('/me').get(verifyAccessToken, getProfile);
 router.route('/address/add').post(verifyAccessToken, addDeliveryAddress);
 router
   .route('/address/remove/:id')

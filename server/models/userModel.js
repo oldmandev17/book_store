@@ -79,6 +79,10 @@ const userSchema = new mongoose.Schema({
         length: [8, 'The coupon must be length eight'],
         required: [true, 'Please select the coupon for this voucher'],
       },
+      used: {
+        type: Number,
+        default: 0,
+      },
     },
   ],
   createdAt: {

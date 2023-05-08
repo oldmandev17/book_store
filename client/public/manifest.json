@@ -8,17 +8,17 @@
       "type": "image/x-icon"
     },
     {
-      "src": "logo192.png",
+      "src": "image/blackcat.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "logo512.png",
+      "src": "image/blackcat.png",
       "type": "image/png",
       "sizes": "512x512"
     },
     {
-      "src": "logo_white.png",
+      "src": "image/blackcat.png",
       "type": "image/png",
       "sizes": "512x512"
     }

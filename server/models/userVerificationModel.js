@@ -23,6 +23,10 @@ const userVerificationSchema = new mongoose.Schema({
       'Please select an expiration time the user needs to verify.',
     ],
   },
+  urlRedirect: {
+    type: String,
+    required: [true, 'Please enter the url redirect.'],
+  },
 });
 
 module.exports = mongoose.model('userVerification', userVerificationSchema);

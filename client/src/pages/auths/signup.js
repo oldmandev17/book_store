@@ -1,83 +1,149 @@
-import React, { useState } from "react";
-import '../../index.css';
-import { Box, Link, Typography } from "@mui/material";
-import Input from '@mui/joy/Input';
-import Button from '@mui/joy/Button';
-import Header from "../../component/Header";
-import Footer from "../../component/Footer";
-import { MdOutlineVisibility } from 'react-icons/md';
-import ModalEmail from "../../component/auth/ModalEmail";
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Box, Link, Typography } from '@mui/material';
+import ModalEmail from 'component/auth/ModalEmail';
+import { Button } from 'component/button';
+import { Checkbox } from 'component/checkbox';
+import IconEyeToggle from 'component/icon/IconEyeToggle';
+import { Input } from 'component/input';
+import useToggleValue from 'hooks/useToggleValue';
+import 'index.css';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
+import { authSignup, authUpdateShow } from 'stores/auth/auth-slice';
+import * as yup from 'yup';
 
-
-
+const signupSchema = yup.object({
+  name: yup.string().required('Tên không thể bỏ trống'),
+  email: yup
+    .string()
+    .email('Vui lòng nhập đúng email')
+    .required('Email không thể bỏ trống'),
+  password: yup
+    .string()
+    .required('Mật khẩu không thể bỏ trống')
+    .min(8, 'Mật khẩu phải nhiều hơn 8 kí tự'),
+  confirmPassword: yup
+    .string()
+    .required('Xác nhận mật khẩu không thể bỏ trống')
+    .min(8, 'Xác nhận mật khẩu phải nhiều hơn 8 kí tự'),
+});
 
 export default function SignUp(props) {
+  const { value: showPassword, handleToggleValue: handleTogglePassword } =
+    useToggleValue();
+  const {
+    value: showConfirmPassword,
+    handleToggleValue: handleToggleConfirmPassword,
+  } = useToggleValue();
+  const { value: acceptTerm, handleToggleValue: handleToggleTerm } =
+    useToggleValue();
 
-    const [showModal, setShowModal] = useState(false);
+  const { show } = useSelector((state) => state.auth);
 
-    const handleOpenModal = () => {
-        setShowModal(true);
-    };
-    return (
-        <>
-            <Header />
-            <Box sx={{ bgcolor: '#152259' }} className="flex justify-center p-24 MainLogin !h-fit">
-                <Box className="text-white text-center mr-20">
-                    <Box component='img' src={"./image/whitecat.png"} alt="image" className="logo-login mx-auto" />
-                    <Typography className="!font-bold !text-6xl logo_title !font-['Ysabeau']">MeoMeo</Typography>
-                    <Typography className="!text-2xl !mt-6">Nhà sách yêu thích dành cho Gen Z</Typography>
-                    <Typography className="!text-2xl">yêu thích ở Việt Nam</Typography>
-                </Box>
-                <Box className="bg-white p-16 rounded-2xl h-full w-1/3">
-                    <form className="w-full mx-auto " action="/confirm">
-                        < Typography className="!text-4xl !font-bold text-center color">Đăng ký</Typography>
-                        <Input
-                            placeholder="User name"
-                            variant="soft"
-                            className="mt-6"
-                        />
-                        <Input
-                            placeholder="Email"
-                            variant="soft"
-                            className="mt-6"
-                        />
-                        <Input
-                            placeholder="Mật khẩu"
-                            type="password"
-                            variant="soft"
-                            className="mt-6 mb-4"
-                            endDecorator={<MdOutlineVisibility size={20} />}
-                        />
-                        <Input
-                            placeholder="Nhập lại mật khẩu"
-                            variant="soft"
-                            type="password"
-                            className="mt-6 mb-4"
-                            endDecorator={<MdOutlineVisibility size={20} />}
-                        />
-                        <Button className="button !text-xl !mb-2 w-full" onClick={handleOpenModal}>TIẾP THEO</Button>
-                        <ModalEmail
-                            handleClose={() => setShowModal(false)}
-                            show={showModal}
-                            title='Xin vui lòng kiểm tra email vừa nhập để hoàn tất việc đăng ký tài khoản của bạn'
-                        >
-                        </ModalEmail>
-                    </form>
+  const {
+    control,
+    reset,
+    formState: { errors },
+    handleSubmit,
+  } = useForm({
+    resolver: yupResolver(signupSchema),
+    mode: 'onSubmit',
+  });
 
-                    <Box className="mt-4 text-center">
-                        <Typography>Bằng việc đăng ký, bạn đã đồng ý với chúng tôi về</Typography>
-                        <Link className="!no-underline" href="">Điều khoản dịch vụ </Link>
-                        <span > & </span>
-                        <Link className="!no-underline" href=""> Chính sách bảo mật</Link>
-                    </Box>
-                    <Box className="flex mt-20 text-center justify-center">
-                        <Typography className="italic !mr-2">Bạn đã có tài khoản?</Typography>
-                        <Link className="!no-underline" href="login">Đăng nhập</Link>
-                    </Box>
-                </Box >
-            </Box >
+  const dispatch = useDispatch();
 
-            <Footer />
-        </>
-    );
-};
+  const handleSignUp = (values) => {
+    values.currentUrl =
+      window.location.protocol + '//' + window.location.host + '/verify';
+    dispatch(authSignup(values));
+  };
+
+  useEffect(() => {
+    if (show) reset();
+  }, [show, reset]);
+
+  return (
+    <>
+      <form
+        className="flex flex-col w-full mx-auto gap-y-3 lg:gap-y-6"
+        onSubmit={handleSubmit(handleSignUp)}
+      >
+        <Typography className="!text-4xl !font-bold text-center color">
+          Đăng ký
+        </Typography>
+        <Input
+          control={control}
+          name="name"
+          placeholder="Tên"
+          error={errors.name?.message}
+        ></Input>
+        <Input
+          control={control}
+          name="email"
+          type="email"
+          placeholder="Email"
+          error={errors.email?.message}
+        ></Input>
+        <Input
+          control={control}
+          name="password"
+          placeholder="Mật khẩu"
+          type={`${showPassword ? 'text' : 'password'}`}
+          error={errors.password?.message}
+        >
+          <IconEyeToggle
+            open={showPassword}
+            onClick={handleTogglePassword}
+          ></IconEyeToggle>
+        </Input>
+        <Input
+          control={control}
+          name="confirmPassword"
+          type={`${showConfirmPassword ? 'text' : 'password'}`}
+          placeholder="Nhập lại mật khẩu"
+          error={errors.confirmPassword?.message}
+        >
+          <IconEyeToggle
+            open={showConfirmPassword}
+            onClick={handleToggleConfirmPassword}
+          ></IconEyeToggle>
+        </Input>
+        <Box className="text-center ">
+          <Checkbox name="term" checked={acceptTerm} onClick={handleToggleTerm}>
+            <Typography>
+              Bạn đồng ý với chúng tôi về{' '}
+              <Link className="!no-underline" href="">
+                Điều khoản dịch vụ{' '}
+              </Link>
+              <span> & </span>
+              <Link className="!no-underline" href="">
+                {' '}
+                Chính sách bảo mật
+              </Link>
+            </Typography>
+          </Checkbox>
+        </Box>
+        <Button
+          disabled={!acceptTerm}
+          className={`w-full ${!acceptTerm ? 'cursor-not-allowed' : ''}`}
+          kind="primary"
+          type="submit"
+        >
+          Tiếp theo
+        </Button>
+      </form>
+      <ModalEmail
+        handleClose={() => dispatch(authUpdateShow(false))}
+        show={show}
+        title="Xin vui lòng kiểm tra email của bạn để hoàn tất việc đăng ký tài khoản."
+      ></ModalEmail>
+      <Box className="flex justify-center mt-10 text-center">
+        <Typography className="italic !mr-2">Bạn đã có tài khoản?</Typography>
+        <Link className="!no-underline" href="login">
+          Đăng nhập
+        </Link>
+      </Box>
+    </>
+  );
+}

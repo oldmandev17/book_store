@@ -1,49 +1,91 @@
-import React from "react";
-import '../../index.css';
-import { Box, Link, Typography } from "@mui/material";
-import Input from '@mui/joy/Input';
-import Button from '@mui/joy/Button';
-import Header from "../../component/Header";
-import Footer from "../../component/Footer";
-import { MdOutlineVisibility } from 'react-icons/md';
+import { Box, Link, Typography } from '@mui/material';
+import 'index.css';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import IconEyeToggle from 'component/icon/IconEyeToggle';
+import { Button, ButtonGoogle } from 'component/button';
+import useToggleValue from 'hooks/useToggleValue';
+import { Input } from 'component/input';
+import { useDispatch } from 'react-redux';
+import { authLogin } from 'stores/auth/auth-slice';
 
+const loginSchema = yup.object({
+  email: yup
+    .string()
+    .email('Vui lòng nhập đúng email')
+    .required('Email không thể bỏ trống'),
+  password: yup
+    .string()
+    .required('Mật khẩu không thể bỏ trống')
+    .min(8, 'Mật khẩu phải nhiều hơn 8 kí tự'),
+});
 
 export default function Login() {
-    return (
-        <>
-            <Header />
-            <Box sx={{ bgcolor: '#152259' }} className="flex justify-center p-32 MainLogin !h-fit ">
-                <Box className="text-white text-center mr-20">
-                    <Box component='img' src={"/image/whitecat.png"} alt="image" className="logo-login mx-auto" />
-                    <Typography className="!font-bold !text-6xl logo_title !font-['Ysabeau']">MeoMeo</Typography>
-                    <Typography className="!text-2xl !mt-6">Nhà sách yêu thích dành cho Gen Z</Typography>
-                    <Typography className="!text-2xl">yêu thích ở Việt Nam</Typography>
-                </Box>
-                <Box className="bg-white p-16 rounded-2xl h-full w-1/3">
-                    <form>
-                        <Typography className="!text-4xl !font-bold text-center color">Đăng nhập</Typography>
-                        <Input
-                            placeholder="Email"
-                            variant="soft"
-                            className="mt-8"
-                        />
-                        <Input
-                            placeholder="Mật khẩu"
-                            type="password"
-                            variant="soft"
-                            className="mt-8 mb-8"
-                            endDecorator={<MdOutlineVisibility size={20} />}
-                        />
-                        <Button className="button w-full !text-xl !mb-2">Đăng nhập</Button>
-                        <Link className="!no-underline" href="/forgot">Quên mật khẩu ?</Link>
-                    </form>
-                    <Box className="mt-20 text-center">
-                        <Typography>Bạn mới biết đến nhà sách Meo Meo ?</Typography>
-                        <Link className="!no-underline" href="/signup">Đăng ký</Link>
-                    </Box>
-                </Box>
-            </Box>
-            <Footer />
-        </>
-    );
-};
+  const { value: showPassword, handleToggleValue: handleTogglePassword } =
+    useToggleValue();
+
+  const {
+    control,
+    reset,
+    formState: { errors },
+    handleSubmit,
+  } = useForm({
+    resolver: yupResolver(loginSchema),
+    mode: 'onSubmit',
+  });
+
+  const dispatch = useDispatch();
+
+  const handleLogin = (values) => {
+    dispatch(authLogin(values));
+  };
+  return (
+    <>
+      <form
+        className="flex flex-col w-full mx-auto gap-y-3 lg:gap-y-6"
+        onSubmit={handleSubmit(handleLogin)}
+      >
+        <Typography className="!text-4xl !font-bold text-center color">
+          Đăng nhập
+        </Typography>
+        <Input
+          control={control}
+          name="email"
+          type="email"
+          placeholder="Email"
+          error={errors.email?.message}
+        ></Input>
+        <Input
+          control={control}
+          name="password"
+          placeholder="Mật khẩu"
+          type={`${showPassword ? 'text' : 'password'}`}
+          error={errors.password?.message}
+        >
+          <IconEyeToggle
+            open={showPassword}
+            onClick={handleTogglePassword}
+          ></IconEyeToggle>
+        </Input>
+        <Button className="w-full" kind="primary" type="submit">
+          Đăng nhập
+        </Button>
+      </form>
+      <Box className="flex flex-col mt-3 lg:gap-y-4 gap-y-2">
+        <Box className="text-right">
+          <Link className="!no-underline" href="/forgot">
+            Quên mật khẩu ?
+          </Link>
+        </Box>
+        <ButtonGoogle text="Google"></ButtonGoogle>
+        <Box className="text-center">
+          <Typography>Bạn mới biết đến nhà sách Meo Meo ?</Typography>
+          <Link className="!no-underline" href="/signup">
+            Đăng ký
+          </Link>
+        </Box>
+      </Box>
+    </>
+  );
+}

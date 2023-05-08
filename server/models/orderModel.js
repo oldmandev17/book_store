@@ -75,8 +75,6 @@ const orderSchema = new mongoose.Schema({
   },
   createdAt: {
     type: Date,
-    default: Date.now,
-    required: [true, 'Please select a time to create this order.'],
   },
   deliveryAt: {
     type: Date,

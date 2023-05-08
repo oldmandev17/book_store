@@ -4,6 +4,8 @@ const authRegisterSchema = Joi.object({
   name: Joi.string().required(),
   email: Joi.string().email().lowercase().required(),
   password: Joi.string().min(6).required(),
+  confirmPassword: Joi.string().min(6).required(),
+  currentUrl: Joi.string().required(),
 });
 
 const authLoginSchema = Joi.object({
@@ -117,6 +119,10 @@ const orderSchema = Joi.object({
   total: Joi.number().required(),
 });
 
+const orderStatusSchema = Joi.string()
+  .required()
+  .valid('pending', 'processed', 'delivering', 'completed', 'canceled');
+
 module.exports = {
   authRegisterSchema,
   authLoginSchema,
@@ -133,4 +139,5 @@ module.exports = {
   featuredSchema,
   reviewSchema,
   orderSchema,
+  orderStatusSchema,
 };

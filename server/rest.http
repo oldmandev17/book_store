@@ -33,7 +33,7 @@ DELETE http://localhost:5000/auth/logout
 Content-Type: application/json
 
 {
-  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2Nzk0MTU0NDMsImV4cCI6MTcxMDk3MzA0MywiYXVkIjoiNjQxN2UxMzk3OTczZDk1YTBmM2RkOGQyIiwiaXNzIjoiYm9va3N0b3JlcGFnZS5jb20ifQ.6eiZKp2YOEh3khAoWO_SGrYGM2t29ygIVAMdw5rpAFc"
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODM1MzI4ODUsImV4cCI6MTcxNTA5MDQ4NSwiYXVkIjoiNjQ1N2MxNjA2MDQ4NWY2N2EyZjczZjlhIiwiaXNzIjoiYm9va3N0b3JlcGFnZS5jb20ifQ.n4SBMlMUCCuZX4koe8b6XXNdZKXJy1bEWY6ST6m6FPU"
 }
 
 ### Request password reset route

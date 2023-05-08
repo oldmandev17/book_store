@@ -9,13 +9,14 @@ const CronJob = require('cron').CronJob;
 const job = new CronJob('* * * * * *', async function () {
   try {
     const coupons = await Coupon.find();
-    for (let coupon of coupons) {
-      if (coupon.endDate < Date.now())
-        await Coupon.updateOne(
-          { code: coupon.code },
-          { status: 'expires', updatedAt: Date.now() }
-        );
-    }
+    if (coupons.length > 0)
+      for (let coupon of coupons) {
+        if (coupon.endDate < Date.now())
+          await Coupon.updateOne(
+            { code: coupon.code },
+            { status: 'expires', updatedAt: Date.now() }
+          );
+      }
   } catch (error) {
     console.log(error);
   }

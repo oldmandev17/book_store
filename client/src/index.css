@@ -40,7 +40,7 @@ body {
 }
 
 .Background {
-  background-color: #152C70;
+  background-color: #152c70;
 }
 
 .logo_title {
@@ -48,19 +48,17 @@ body {
 }
 
 .button {
-  background-color: #45528A !important;
+  background-color: #45528a !important;
   color: white !important;
-
 }
 
 .button-out {
-  background-color: #152C70 !important;
+  background-color: #152c70 !important;
   color: white !important;
-
 }
 
 .button-menu {
-  background-color: #EFF3FA !important;
+  background-color: #eff3fa !important;
 }
 
 .button:hover,
@@ -72,12 +70,12 @@ body {
 }
 
 .button-back {
-  background-color: #B7B7B7 !important;
+  background-color: #b7b7b7 !important;
   color: white !important;
 }
 
 .color {
-  color: #152C70 !important;
+  color: #152c70 !important;
 }
 
 .xl {
@@ -85,7 +83,7 @@ body {
 }
 
 .hover-upload {
-  border: 1px solid #152C70;
+  border: 1px solid #152c70;
   border-radius: 20px;
 }
 
@@ -121,4 +119,8 @@ body {
 
 .support {
   border-radius: 100px;
+}
+
+input:focus + .error-input {
+  display: none;
 }
