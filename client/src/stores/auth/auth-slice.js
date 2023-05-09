@@ -22,14 +22,11 @@ const authSlice = createSlice({
       show: action.payload,
     }),
 
-    authUpdateUser: (state, action) => {
-      console.log('🚀 ~ file: auth-slice.js:43 ~ action:', action);
-      return {
-        ...state,
-        user: action.payload.user,
-        accessToken: action.payload.accessToken,
-      };
-    },
+    authUpdateUser: (state, action) => ({
+      show: state.show,
+      user: action.payload.user,
+      accessToken: action.payload.accessToken,
+    }),
 
     authFetchMe: (state, action) => ({
       ...state,

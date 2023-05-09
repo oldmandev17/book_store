@@ -29,7 +29,6 @@ function App() {
         })
       );
     } else {
-      console.log("working")
       const { refresh_token } = getToken();
       if (refresh_token) dispatch(authRefreshToken(refresh_token));
       else {
@@ -46,7 +45,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<AuthLayout />}>
+        <Route element={<AuthLayout />}>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/forgot" element={<Forgot />} />
