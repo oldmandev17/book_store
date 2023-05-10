@@ -10,6 +10,7 @@ const authSlice = createSlice({
   reducers: {
     authLogin: (state, action) => ({
       ...state,
+      show: state.show,
     }),
 
     authSignup: (state, action) => ({
@@ -33,7 +34,9 @@ const authSlice = createSlice({
       ...action.payload,
     }),
 
-    authRefreshToken: (state, action) => ({}),
+    authRefreshToken: (state, action) => ({
+      ...state,
+    }),
 
     authLogout: (state, action) => ({}),
   },

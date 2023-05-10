@@ -1,9 +1,23 @@
 import { Box, Typography } from '@mui/material';
-import { Outlet } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { Outlet, useNavigate } from 'react-router-dom';
 import Footer from '../component/footer';
 import Header from '../component/header';
 
-export default function AuthLayout(props) {
+export default function LayoutAuthentication(props) {
+  const { user } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user && user._id) {
+      navigate('/');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
+  if (user && user._id) return null;
+
   return (
     <>
       <Header></Header>

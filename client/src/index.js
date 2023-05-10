@@ -1,17 +1,101 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
+import LayoutAuthentication from 'layouts/LayoutAuthentication';
+import { Suspense, lazy } from 'react';
+import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
-import reportWebVitals from './reportWebVitals';
-import { store } from 'stores/configureStore';
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { store } from 'stores/configureStore';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+import RequiredAuthPage from 'pages/RequiredAuthPage';
+const LoginPage = lazy(() => import('pages/auths/login'));
+const SignUpPage = lazy(() => import('pages/auths/signup'));
+const ForgotPage = lazy(() => import('pages/auths/forgot'));
+const AdminDashboardPage = lazy(() => import('pages/admins'));
+const AdminCategoryPage = lazy(() => import('pages/admins/categories'));
+const AdminProductPage = lazy(() => import('pages/admins/products'));
+const AdminBillPage = lazy(() => import('pages/admins/bills'));
+const AdminAccountPage = lazy(() => import('pages/admins/accounts'));
+const AdminSettingPage = lazy(() => import('pages/admins/settings'));
+const AdminAuthorPage = lazy(() => import('pages/admins/authors'));
+const VerifyPage = lazy(() => import('pages/auths/verify'));
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
+const container = document.getElementById('root');
+const router = createBrowserRouter([
+  {
+    element: <LayoutAuthentication></LayoutAuthentication>,
+    children: [
+      {
+        path: '/login',
+        element: <LoginPage></LoginPage>,
+      },
+      {
+        path: '/signup',
+        element: <SignUpPage></SignUpPage>,
+      },
+      {
+        path: '/forgot',
+        element: <ForgotPage></ForgotPage>,
+      },
+      {
+        path: '/verify/:id/:loginString',
+        element: <VerifyPage></VerifyPage>,
+      },
+    ],
+  },
+  {
+    element: <RequiredAuthPage allowPermissions={['user']}></RequiredAuthPage>,
+    children: [
+      {
+        path: '/admin',
+        element: <>I'm here</>,
+      },
+    ],
+  },
+  // {
+  //   path: '/admin',
+  //   children: [
+  //     {
+  //       path: '/home',
+  //       element: <AdminDashboardPage></AdminDashboardPage>,
+  //     },
+  //     {
+  //       path: '/cate',
+  //       element: <AdminCategoryPage></AdminCategoryPage>,
+  //     },
+  //     {
+  //       path: '/product',
+  //       element: <AdminProductPage></AdminProductPage>,
+  //     },
+  //     {
+  //       path: '/bill',
+  //       element: <AdminBillPage></AdminBillPage>,
+  //     },
+  //     {
+  //       path: '/account',
+  //       element: <AdminAccountPage></AdminAccountPage>,
+  //     },
+  //     {
+  //       path: '/author',
+  //       element: <AdminAuthorPage></AdminAuthorPage>,
+  //     },
+  //     {
+  //       path: '/setting',
+  //       element: <AdminSettingPage></AdminSettingPage>,
+  //     },
+  //   ],
+  // },
+]);
+
+createRoot(container).render(
   <Provider store={store}>
-    <ToastContainer></ToastContainer>
-    <App />
+    <Suspense>
+      <App>
+        <RouterProvider router={router}></RouterProvider>
+      </App>
+    </Suspense>
+    <ToastContainer bodyClassName="font-primary text-sm"></ToastContainer>
   </Provider>
 );
 
