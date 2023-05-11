@@ -1,53 +1,74 @@
-import React, { useState } from 'react';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { Box, Link, Typography } from '@mui/material';
-import Input from '@mui/joy/Input';
-import Button from '@mui/joy/Button';
-import Header from 'component/header';
-import Footer from 'component/footer';
-import 'index.css';
 import ModalEmail from 'component/auth/ModalEmail';
+import { Button } from 'component/button';
+import { Input } from 'component/input';
+import 'index.css';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  authRequestPasswordReset,
+  authUpdateShowForgot,
+} from 'stores/auth/auth-slice';
+import * as yup from 'yup';
 
-export default function Forgot(props) {
-  const [showModal, setShowModal] = useState(false);
+const forgotPasswordSchema = yup.object({
+  email: yup
+    .string()
+    .email('Vui lòng nhập đúng email')
+    .required('Email không thể bỏ trống'),
+});
 
-  const [sendEmail, setSendEmail] = useState(false);
+export default function Forgot() {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(forgotPasswordSchema),
+    mode: 'onSubmit',
+  });
 
-  const handleOpenModal = () => {
-    setShowModal(true);
-  };
+  const dispatch = useDispatch();
+  const { showForgot } = useSelector((state) => state.auth);
+  const [button, setButton] = useState('Tiếp theo');
 
-  const handleCloseModal = () => {
-    setShowModal(false);
-    setSendEmail(true);
+  const handleForgotPassword = (values) => {
+    values.redirectUrl =
+      window.location.protocol + '//' + window.location.host + '/newPassword';
+    dispatch(authRequestPasswordReset(values));
   };
 
   return (
     <>
-      <form className="w-full mx-auto " action="/confirm">
+      <form
+        className="flex flex-col w-full mx-auto gap-y-3 lg:gap-y-6"
+        onSubmit={handleSubmit(handleForgotPassword)}
+      >
         <Typography className="!text-4xl !font-bold text-center color">
           Quên mật khẩu
         </Typography>
-        <Input placeholder="Email" variant="soft" className="mt-12 mb-6" />
-        {!sendEmail && (
-          <Button
-            className="button w-full !text-xl !mb-2"
-            onClick={handleOpenModal}
-          >
-            TIẾP THEO
-          </Button>
-        )}
-        {sendEmail && (
-          <Button className="button w-full !text-xl !mb-2">
-            GỬI LẠI EMAIL
-          </Button>
-        )}
+        <Input
+          control={control}
+          name="email"
+          type="email"
+          placeholder="Email"
+          error={errors.email?.message}
+        ></Input>
+        <Button className="w-full" kind="primary" type="submit">
+          {button}
+        </Button>
         <ModalEmail
-          handleClose={handleCloseModal}
-          show={showModal}
+          handleClose={() => {
+            dispatch(authUpdateShowForgot(false));
+            setButton('Gửi lại email');
+          }}
+          show={showForgot}
           title="Xin vui lòng kiểm tra email vừa nhập để hoàn tất việc cài đặt mật khẩu"
         ></ModalEmail>
       </form>
-      <Box className="mt-20 text-center">
+      <Box className="mt-10 text-center">
         <Typography>Quay lại trang đăng nhập?</Typography>
         <Link className="!no-underline" href="/login">
           Đăng nhập

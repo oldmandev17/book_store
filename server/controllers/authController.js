@@ -126,7 +126,7 @@ const sendResetEmail = async ({ _id, email }, redirectUrl, res, next) => {
     });
     await newPasswordReset.save();
     await transporter.sendMail(mailOptions);
-    res.send('Password reset email sent');
+    res.status(200).send();
   } catch (error) {
     next(error);
   }
@@ -301,7 +301,11 @@ module.exports = {
 
   resetPassword: async (req, res, next) => {
     try {
-      const { userId, resetString, newPassword } = req.body;
+      const { userId, resetString, newPassword, newConfirmPassword } = req.body;
+      if (newPassword !== newConfirmPassword)
+        throw createError.Conflict(
+          'Password and password confirm does not match.'
+        );
       const user = await PasswordReset.findOne({ userId });
       if (!user) throw createError.NotFound('Password reset request not found');
       const { expiresAt, resetString: hashedResetString } = user;

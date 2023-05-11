@@ -3,8 +3,8 @@ const Joi = require('@hapi/joi');
 const authRegisterSchema = Joi.object({
   name: Joi.string().required(),
   email: Joi.string().email().lowercase().required(),
-  password: Joi.string().min(6).required(),
-  confirmPassword: Joi.string().min(6).required(),
+  password: Joi.string().min(8).required(),
+  confirmPassword: Joi.string().min(8).required(),
   currentUrl: Joi.string().required(),
 });
 

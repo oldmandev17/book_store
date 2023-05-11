@@ -1,4 +1,5 @@
 import LayoutAuthentication from 'layouts/LayoutAuthentication';
+import RequiredAuthPage from 'pages/RequiredAuthPage';
 import { Suspense, lazy } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
@@ -8,7 +9,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import { store } from 'stores/configureStore';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import RequiredAuthPage from 'pages/RequiredAuthPage';
 const LoginPage = lazy(() => import('pages/auths/login'));
 const SignUpPage = lazy(() => import('pages/auths/signup'));
 const ForgotPage = lazy(() => import('pages/auths/forgot'));
@@ -38,14 +38,18 @@ const router = createBrowserRouter([
         path: '/forgot',
         element: <ForgotPage></ForgotPage>,
       },
-      {
-        path: '/verify/:id/:loginString',
-        element: <VerifyPage></VerifyPage>,
-      },
     ],
   },
   {
-    element: <RequiredAuthPage allowPermissions={['user']}></RequiredAuthPage>,
+    path: '/verify/:id/:loginString',
+    element: <VerifyPage></VerifyPage>,
+  },
+  {
+    path: '/',
+    element: <>My Home</>,
+  },
+  {
+    element: <RequiredAuthPage allowPermissions={[]}></RequiredAuthPage>,
     children: [
       {
         path: '/admin',

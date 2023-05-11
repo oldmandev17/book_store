@@ -10,7 +10,7 @@ import 'index.css';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { authSignup, authUpdateShow } from 'stores/auth/auth-slice';
+import { authSignup, authUpdateShowSignup } from 'stores/auth/auth-slice';
 import * as yup from 'yup';
 
 const signupSchema = yup.object({
@@ -29,7 +29,7 @@ const signupSchema = yup.object({
     .min(8, 'Xác nhận mật khẩu phải nhiều hơn 8 kí tự'),
 });
 
-export default function SignUp(props) {
+export default function SignUp() {
   const { value: showPassword, handleToggleValue: handleTogglePassword } =
     useToggleValue();
   const {
@@ -39,7 +39,7 @@ export default function SignUp(props) {
   const { value: acceptTerm, handleToggleValue: handleToggleTerm } =
     useToggleValue();
 
-  const { show } = useSelector((state) => state.auth);
+  const { showSignup } = useSelector((state) => state.auth);
 
   const {
     control,
@@ -60,8 +60,8 @@ export default function SignUp(props) {
   };
 
   useEffect(() => {
-    if (show) reset();
-  }, [show, reset]);
+    if (showSignup) reset();
+  }, [showSignup, reset]);
 
   return (
     <>
@@ -134,8 +134,8 @@ export default function SignUp(props) {
         </Button>
       </form>
       <ModalEmail
-        handleClose={() => dispatch(authUpdateShow(false))}
-        show={show}
+        handleClose={() => dispatch(authUpdateShowSignup(false))}
+        show={showSignup}
         title="Xin vui lòng kiểm tra email của bạn để hoàn tất việc đăng ký tài khoản."
       ></ModalEmail>
       <Box className="flex justify-center mt-10 text-center">

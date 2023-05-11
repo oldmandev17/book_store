@@ -5,12 +5,12 @@ const authSlice = createSlice({
   initialState: {
     user: undefined,
     accessToken: null,
-    show: false,
+    showSignup: false,
+    showForgot: false,
   },
   reducers: {
     authLogin: (state, action) => ({
       ...state,
-      show: state.show,
     }),
 
     authSignup: (state, action) => ({
@@ -18,13 +18,15 @@ const authSlice = createSlice({
       ...action.payload,
     }),
 
-    authUpdateShow: (state, action) => ({
+    authUpdateShowSignup: (state, action) => ({
       ...state,
-      show: action.payload,
+      showForgot: state.showForgot,
+      showSignup: action.payload,
     }),
 
     authUpdateUser: (state, action) => ({
-      show: state.show,
+      showSignup: state.showSignup,
+      showForgot: state.showForgot,
       user: action.payload.user,
       accessToken: action.payload.accessToken,
     }),
@@ -35,21 +37,38 @@ const authSlice = createSlice({
     }),
 
     authRefreshToken: (state, action) => ({
-      ...state,
+      showSignup: state.showSignup,
+      showForgot: state.showForgot,
     }),
 
     authLogout: (state, action) => ({}),
+
+    authUpdateShowForgot: (state, action) => ({
+      ...state,
+      showSignup: state.showSignup,
+      showForgot: action.payload,
+    }),
+
+    authRequestPasswordReset: (state, action) => ({
+      showSignup: state.showSignup,
+      showForgot: state.showForgot,
+    }),
+
+    authResetPassword: (state, action) => ({}),
   },
 });
 
 export const {
   authLogin,
   authSignup,
-  authUpdateShow,
+  authUpdateShowSignup,
   authUpdateUser,
   authFetchMe,
   authRefreshToken,
   authLogout,
+  authRequestPasswordReset,
+  authUpdateShowForgot,
+  authResetPassword,
 } = authSlice.actions;
 
 export default authSlice.reducer;

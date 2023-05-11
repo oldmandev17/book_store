@@ -1,4 +1,4 @@
-const { default: axios } = require('apis/axios');
+import axios from 'apis/axios';
 
 export const requestAuthSignup = (data) => {
   return axios.post('/auth/register', { ...data });
@@ -40,4 +40,28 @@ export const requestAuthLogout = (token) => {
       'Content-Type': 'application/json',
     },
   });
+};
+
+export const requestRequestPasswordReset = (data) => {
+  return axios.post(
+    '/auth/requestPasswordReset',
+    { ...data },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+};
+
+export const questResetPassword = (data) => {
+  return axios.post(
+    '/auth/resetPassword',
+    { ...data },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
 };

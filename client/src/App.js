@@ -19,12 +19,7 @@ function App({ children }) {
       const { refresh_token } = getToken();
       if (refresh_token) dispatch(authRefreshToken(refresh_token));
       else {
-        dispatch(
-          authUpdateUser({
-            user: undefined,
-            accessToken: null,
-          })
-        );
+        dispatch(authUpdateUser({}));
         logout();
       }
     }

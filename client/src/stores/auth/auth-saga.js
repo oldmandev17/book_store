@@ -3,12 +3,14 @@ import {
   handleAuthLogin,
   handleAuthLogout,
   handleAuthRefreshToken,
+  handleAuthRequestPasswordReset,
   handleAuthSignup,
 } from './auth-handlers';
 import {
   authLogin,
   authLogout,
   authRefreshToken,
+  authRequestPasswordReset,
   authSignup,
 } from './auth-slice';
 
@@ -17,4 +19,8 @@ export default function* authSaga() {
   yield takeLatest(authLogin.type, handleAuthLogin);
   yield takeLatest(authRefreshToken.type, handleAuthRefreshToken);
   yield takeLatest(authLogout.type, handleAuthLogout);
+  yield takeLatest(
+    authRequestPasswordReset.type,
+    handleAuthRequestPasswordReset
+  );
 }

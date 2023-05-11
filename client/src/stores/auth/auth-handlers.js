@@ -7,13 +7,18 @@ import {
   requestAuthLogout,
   requestAuthRefreshToken,
   requestAuthSignup,
+  requestRequestPasswordReset,
 } from './auth-requests';
-import { authUpdateShow, authUpdateUser } from './auth-slice';
+import {
+  authUpdateShowForgot,
+  authUpdateShowSignup,
+  authUpdateUser,
+} from './auth-slice';
 
 function* handleAuthSignup({ payload }) {
   try {
     const response = yield call(requestAuthSignup, payload);
-    if (response.status === 201) yield put(authUpdateShow(true));
+    if (response.status === 201) yield put(authUpdateShowSignup(true));
   } catch (error) {
     toast.error(error.response.data.error.message);
   }
@@ -26,7 +31,6 @@ function* handleAuthLogin({ payload }) {
       saveToken(response.data.accessToken, response.data.refreshToken);
       yield call(handleAuthFetchMe, { payload: response.data.accessToken });
     }
-    yield 1;
   } catch (error) {
     toast.error(error.response.data.error.message);
   }
@@ -35,7 +39,7 @@ function* handleAuthLogin({ payload }) {
 function* handleAuthFetchMe({ payload }) {
   try {
     const response = yield call(requestAuthFetchMe, payload);
-    if (response.data)
+    if (response.status === 200)
       yield put(
         authUpdateUser({
           user: response.data.profile,
@@ -76,10 +80,20 @@ function* handleAuthLogout({ payload }) {
   }
 }
 
+function* handleAuthRequestPasswordReset({ payload }) {
+  try {
+    const response = yield call(requestRequestPasswordReset, payload);
+    if (response.status === 200) yield put(authUpdateShowForgot(true));
+  } catch (error) {
+    toast.error(error.response.data.error.message);
+  }
+}
+
 export {
   handleAuthSignup,
   handleAuthLogin,
   handleAuthFetchMe,
   handleAuthRefreshToken,
   handleAuthLogout,
+  handleAuthRequestPasswordReset,
 };
