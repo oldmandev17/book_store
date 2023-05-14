@@ -7,13 +7,20 @@ import Header from "../../component/Header";
 import Footer from "../../component/Footer";
 import { MdOutlineVisibility } from 'react-icons/md';
 import ModalEmail from "../../component/auth/ModalEmail";
+import { useForm } from 'react-hook-form'
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from 'yup';
 
-
+const signUpSchema = yup.object().shape({
+    username: yup
+})
 
 
 export default function SignUp(props) {
 
     const [showModal, setShowModal] = useState(false);
+
+    const { register, formState: { errors }, handleSubmit } = useForm()
 
     const handleOpenModal = () => {
         setShowModal(true);

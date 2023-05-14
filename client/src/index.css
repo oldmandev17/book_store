@@ -50,30 +50,46 @@ body {
 .button {
   background-color: #45528A !important;
   color: white !important;
+  cursor: pointer !important;
 
 }
 
 .button-out {
   background-color: #152C70 !important;
   color: white !important;
+  cursor: pointer !important;
 
 }
 
 .button-menu {
   background-color: #EFF3FA !important;
+  cursor: pointer !important;
 }
+
+.button-nav {
+  background-color: transparent !important;
+  cursor: pointer !important;
+}
+
 
 .button:hover,
 .button-out:hover,
 .button-menu:hover,
-.button-back:hover {
+.button-back:hover,
+.button-nav:hover {
   opacity: 80%;
   scale: 90%;
+}
+
+.product:hover,
+.button-slide {
+  scale: 1.1 !important;
 }
 
 .button-back {
   background-color: #B7B7B7 !important;
   color: white !important;
+  cursor: pointer !important;
 }
 
 .color {
@@ -121,4 +137,12 @@ body {
 
 .support {
   border-radius: 100px;
+}
+
+.MuiCheckbox-root {
+  color: white !important;
+}
+
+.gray-column {
+  background-color: #f5f5f5 !important;
 }

@@ -63,7 +63,7 @@ const ModalEditAccount = (props) => {
                                 <Box className="flex mt-4">
                                     <TextField id="outlined-basic" label="Địa chỉ" variant="outlined" fullWidth className='KumbhSans !mr-10' multiline rows={4} sx={{ width: 5 / 9 }} />
                                     <Box className='flex !mx-auto'>
-                                        <Box className="button-out rounded-md w-fit py-2 px-12 h-fit mr-10 cursor-pointer" onClick={() => handleOpenModalChange()}>
+                                        <Box className="button-out rounded-md w-fit py-2 px-12 h-fit mr-10" onClick={() => handleOpenModalChange()}>
                                             <Typography className='text-center KumbhSans !font-medium'>
                                                 Đổi mật khẩu
                                             </Typography>
@@ -94,7 +94,7 @@ const ModalEditAccount = (props) => {
                             </Box>
                         </Box>
                         <Box className='flex justify-end py-4'>
-                            <Box className="button-out mx-right rounded-md w-fit py-2 px-8 h-fit mr-10 cursor-pointer" onClick={handleClose}>
+                            <Box className="button-out mx-right rounded-md w-fit py-2 px-8 h-fit mr-10" onClick={handleClose}>
                                 <Typography className='text-center KumbhSans !font-medium'>
                                     Xác nhận
                                 </Typography>

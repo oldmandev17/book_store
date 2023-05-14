@@ -5,7 +5,7 @@ const Menu = (props) => {
     const { icon, title, link } = props
     return (
         <Link href={link} className="!no-underline">
-            <Box className="button w-4/5 !mb-2 mx-auto p-2 rounded-md cursor-pointer" >
+            <Box className="button w-4/5 !mb-2 mx-auto p-2 rounded-md" >
                 <Box className="flex ml-8">
                     < Box className='my-auto' >
                         {icon}
