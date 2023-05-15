@@ -204,7 +204,7 @@ module.exports = {
 
   verified: async (req, res, next) => {
     try {
-      const { userId, loginString } = req.params;
+      const { userId, loginString } = req.body;
       const userLogin = await UserLogin.findOne({ userId });
       if (!userLogin)
         throw createError.NotFound('User not exist or login already.');
@@ -219,7 +219,7 @@ module.exports = {
         const accessToken = await signAccessToken(userId);
         const refreshToken = await signRefreshToken(userId);
 
-        UserLogin.deleteOne({ userId });
+        await UserLogin.deleteOne({ userId });
         res.send({ accessToken, refreshToken });
       }
     } catch (error) {
@@ -320,7 +320,7 @@ module.exports = {
         const hashedNewPassword = await bcrypt.hash(newPassword, saltRounds);
         await User.updateOne({ _id: userId }, { password: hashedNewPassword });
         await PasswordReset.deleteOne({ userId });
-        res.send('Reset password successfully');
+        res.status(200).send();
       }
     } catch (error) {
       next(error);

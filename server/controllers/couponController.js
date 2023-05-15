@@ -6,7 +6,7 @@ const voucherCode = require('voucher-code-generator');
 const APIFeature = require('../utils/apiFeatures');
 const CronJob = require('cron').CronJob;
 
-const job = new CronJob('* * * * * *', async function () {
+const job = new CronJob('0 0 * * *', async function () {
   try {
     const coupons = await Coupon.find();
     if (coupons.length > 0)

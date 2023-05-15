@@ -5,14 +5,16 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import Footer from '../component/footer';
 import Header from '../component/header';
 
-export default function LayoutAuthentication(props) {
+export default function LayoutAuthentication() {
   const { user } = useSelector((state) => state.auth);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (user && user._id) {
-      navigate('/');
+      if (user.role.includes('admin')) navigate('/admin');
+      else navigate('/');
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 

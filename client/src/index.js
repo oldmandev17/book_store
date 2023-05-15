@@ -20,6 +20,7 @@ const AdminAccountPage = lazy(() => import('pages/admins/accounts'));
 const AdminSettingPage = lazy(() => import('pages/admins/settings'));
 const AdminAuthorPage = lazy(() => import('pages/admins/authors'));
 const VerifyPage = lazy(() => import('pages/auths/verify'));
+const NewPasswordPage = lazy(() => import('pages/auths/newPassword'));
 
 const container = document.getElementById('root');
 const router = createBrowserRouter([
@@ -38,18 +39,22 @@ const router = createBrowserRouter([
         path: '/forgot',
         element: <ForgotPage></ForgotPage>,
       },
+      {
+        path: '/newPassword/:id/:resetString',
+        element: <NewPasswordPage></NewPasswordPage>,
+      },
+      {
+        path: '/verify/:id/:loginString',
+        element: <VerifyPage></VerifyPage>,
+      },
     ],
-  },
-  {
-    path: '/verify/:id/:loginString',
-    element: <VerifyPage></VerifyPage>,
   },
   {
     path: '/',
     element: <>My Home</>,
   },
   {
-    element: <RequiredAuthPage allowPermissions={[]}></RequiredAuthPage>,
+    element: <RequiredAuthPage allowPermissions={['admin']}></RequiredAuthPage>,
     children: [
       {
         path: '/admin',

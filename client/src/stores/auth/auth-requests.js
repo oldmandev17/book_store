@@ -42,7 +42,7 @@ export const requestAuthLogout = (token) => {
   });
 };
 
-export const requestRequestPasswordReset = (data) => {
+export const requestAuthRequestPasswordReset = (data) => {
   return axios.post(
     '/auth/requestPasswordReset',
     { ...data },
@@ -54,7 +54,7 @@ export const requestRequestPasswordReset = (data) => {
   );
 };
 
-export const questResetPassword = (data) => {
+export const requestAuthResetPassword = (data) => {
   return axios.post(
     '/auth/resetPassword',
     { ...data },
@@ -63,5 +63,13 @@ export const questResetPassword = (data) => {
         'Content-Type': 'application/json',
       },
     }
+  );
+};
+
+export const requestAuthVerified = (data) => {
+  return axios.post(
+    '/auth/verified',
+    { ...data },
+    { headers: { 'Content-Type': 'application/json' } }
   );
 };

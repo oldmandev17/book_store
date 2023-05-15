@@ -7,6 +7,7 @@ const authSlice = createSlice({
     accessToken: null,
     showSignup: false,
     showForgot: false,
+    redirect: '',
   },
   reducers: {
     authLogin: (state, action) => ({
@@ -54,7 +55,20 @@ const authSlice = createSlice({
       showForgot: state.showForgot,
     }),
 
-    authResetPassword: (state, action) => ({}),
+    authResetPassword: (state, action) => ({
+      showSignup: state.showSignup,
+      showForgot: state.showForgot,
+    }),
+
+    authUpdateRedirect: (state, action) => ({
+      showSignup: state.showSignup,
+      showForgot: state.showForgot,
+      redirect: action.payload,
+    }),
+
+    authVerified: (state, action) => ({
+      ...state,
+    }),
   },
 });
 
@@ -69,6 +83,8 @@ export const {
   authRequestPasswordReset,
   authUpdateShowForgot,
   authResetPassword,
+  authUpdateRedirect,
+  authVerified,
 } = authSlice.actions;
 
 export default authSlice.reducer;

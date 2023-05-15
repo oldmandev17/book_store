@@ -6,10 +6,13 @@ import {
   requestAuthLogin,
   requestAuthLogout,
   requestAuthRefreshToken,
+  requestAuthRequestPasswordReset,
+  requestAuthResetPassword,
   requestAuthSignup,
-  requestRequestPasswordReset,
+  requestAuthVerified,
 } from './auth-requests';
 import {
+  authUpdateRedirect,
   authUpdateShowForgot,
   authUpdateShowSignup,
   authUpdateUser,
@@ -82,8 +85,31 @@ function* handleAuthLogout({ payload }) {
 
 function* handleAuthRequestPasswordReset({ payload }) {
   try {
-    const response = yield call(requestRequestPasswordReset, payload);
+    const response = yield call(requestAuthRequestPasswordReset, payload);
     if (response.status === 200) yield put(authUpdateShowForgot(true));
+  } catch (error) {
+    toast.error(error.response.data.error.message);
+  }
+}
+
+function* handleAuthResetPassword({ payload }) {
+  try {
+    const response = yield call(requestAuthResetPassword, payload);
+    if (response.status === 200) {
+      yield put(authUpdateRedirect('/login'));
+    }
+  } catch (error) {
+    toast.error(error.response.data.error.message);
+  }
+}
+
+function* handleAuthVerified({ payload }) {
+  try {
+    const response = yield call(requestAuthVerified, payload);
+    if (response.data.accessToken && response.data.refreshToken) {
+      saveToken(response.data.accessToken, response.data.refreshToken);
+      yield call(handleAuthFetchMe, { payload: response.data.accessToken });
+    }
   } catch (error) {
     toast.error(error.response.data.error.message);
   }
@@ -96,4 +122,6 @@ export {
   handleAuthRefreshToken,
   handleAuthLogout,
   handleAuthRequestPasswordReset,
+  handleAuthResetPassword,
+  handleAuthVerified,
 };

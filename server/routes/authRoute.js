@@ -28,7 +28,7 @@ const {
 
 router.route('/register').post(register);
 router.route('/verify/:userId/:uniqueString').get(verifyEmail);
-router.route('/verified/:userId/:loginString').get(verified);
+router.route('/verified').post(verified);
 router.route('/login').post(login);
 router.route('/refresh-token').post(refreshToken);
 router.route('/logout/:refreshToken').delete(logout);
