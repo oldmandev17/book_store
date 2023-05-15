@@ -27,7 +27,7 @@ const ModalChangePasswordAccount = (props) => {
                         <TextField id="outlined-basic" label="Nhập lại mật khẩu mới" variant="outlined" className='!ml-16 KumbhSans w-3/4 !mt-4' />
                     </Box>
                     <Box className='flex justify-center py-4'>
-                        <Box className="button-out mx-right rounded-md w-fit py-2 px-8 h-fit mr-10 cursor-pointer" onClick={handleClose}>
+                        <Box className="button-out mx-right rounded-md w-fit py-2 px-8 h-fit mr-10" onClick={handleClose}>
                             <Typography className='text-center KumbhSans !font-medium'>
                                 Xác nhận
                             </Typography>

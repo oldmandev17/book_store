@@ -6,7 +6,7 @@ import { BiCategory } from 'react-icons/bi';
 import { BsPeopleFill } from "react-icons/bs";
 import { RiBillLine } from 'react-icons/ri';
 import { ImStatsBars } from 'react-icons/im';
-import { MdManageAccounts } from 'react-icons/md';
+import { MdManageAccounts, MdOutlineDiscount } from 'react-icons/md';
 
 
 const Sidebar = () => {
@@ -25,6 +25,7 @@ const Sidebar = () => {
                 <Menu icon={<RiBillLine />} title="Hoá đơn" link="/admin/bill" />
                 <Menu icon={<ImStatsBars />} title="Doanh thu" />
                 <Menu icon={<MdManageAccounts />} title="Tài khoản" link="/admin/account" />
+                <Menu icon={<MdOutlineDiscount />} title="Mã giảm giá" />
                 <Box className="mt-28">
                     <Menu icon={<AiOutlineSetting />} title="Thiết lập" link="/admin/setting" />
                 </Box>
